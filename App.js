@@ -39,36 +39,45 @@ import {PaymentSuccess} from './src/components/PaymentSuccess';
 import {PaymentFailure} from './src/components/PaymentFailure';
 import {Splash} from './src/components/Splash';
 import {Cosmetics} from './src/components/dashboard/Categories/Cosmetics.js';
-import {Provider} from 'react-redux';
+import {Provider, useDispatch, useSelector} from 'react-redux';
 import storeConfig from './src/store/configureStore';
 import { MyProfile } from './src/components/ProfileComponents/MyProfile';
 import { MyRegularBasket } from './src/components/ProfileComponents/MyRegularBasket';
 import { MySharedCart } from './src/components/ProfileComponents/MySharedCart';
 import { AddressBook } from './src/components/ProfileComponents/AddressBook';
+import { getUserProfileInfo } from './src/utils/AsyncStorageHelper';
+import { setuser } from './src/Redux/reducer/User';
+import Routes from './src/utils/Routes';
 
 
 const RootStack = createStackNavigator();
 const screens = [
-  {
-    name: 'Register',
-    components: Register,
-    headerBackTitle: 'Home',
-  },
+  // {
+  //   name: 'Register',
+  //   components: Register,
+  //   headerBackTitle: 'Home',
+  // },
   // {
   //   name: 'DropdownExample',
   //   components: DropdownExample,
   //   headerBackTitle: 'Home',
   // },
   {
+    name: 'DrawerView',
+    components: DrawerView,
+    headerBackTitle: 'Home',
+    headerShown: false,
+  },
+  {
     name: 'HeaderComponent',
     components: HeaderComponent,
     headerBackTitle: 'HeaderComponent',
   },
-  {
-    name: 'PowerUserRegister',
-    components: PowerUserRegister,
-    headerBackTitle: 'PowerUserRegister',
-  },
+  // {
+  //   name: 'PowerUserRegister',
+  //   components: PowerUserRegister,
+  //   headerBackTitle: 'PowerUserRegister',
+  // },
   {
     name: 'AddFollowers',
     components: AddFollowers,
@@ -79,27 +88,22 @@ const screens = [
   //   component: Login,
   //   headerBackTitle: 'Home',
   // },
-  {
-    name: 'SignUp',
-    components: Signup,
-    headerBackTitle: 'Home',
-  },
-  {
-    name: 'ForgetPassword',
-    components: ForgetPassword,
-    headerBackTitle: 'Home',
-  },
-  {
-    name: 'OtpVerification',
-    components: OtpVerification,
-    headerBackTitle: 'Home',
-  },
-  {
-    name: 'DrawerView',
-    components: DrawerView,
-    headerBackTitle: 'Home',
-    headerShown: false,
-  },
+  // {
+  //   name: 'SignUp',
+  //   components: Signup,
+  //   headerBackTitle: 'Home',
+  // },
+  // {
+  //   name: 'ForgetPassword',
+  //   components: ForgetPassword,
+  //   headerBackTitle: 'Home',
+  // },
+  // {
+  //   name: 'OtpVerification',
+  //   components: OtpVerification,
+  //   headerBackTitle: 'Home',
+  // },
+
   {
     name: 'ProductDetails',
     components: ProductDetails,
@@ -235,6 +239,35 @@ const screens = [
     headerBackTitle: 'AddressBook',
   },
 ];
+
+const screens1=[
+  {
+    name: 'Register',
+    components: Register,
+    headerBackTitle: 'Home',
+  },
+  {
+    name: 'PowerUserRegister',
+    components: PowerUserRegister,
+    headerBackTitle: 'PowerUserRegister',
+  },
+  {
+    name: 'SignUp',
+    components: Signup,
+    headerBackTitle: 'Home',
+  },
+  {
+    name: 'ForgetPassword',
+    components: ForgetPassword,
+    headerBackTitle: 'Home',   
+  },
+  {
+    name: 'OtpVerification',
+    components: OtpVerification,
+    headerBackTitle: 'Home',
+  },
+]
+
 const App = () => {
   const [splash, SetSplash] = useState(true);
 
@@ -244,42 +277,89 @@ const App = () => {
     }, 2000);
   }, [splash]);
 
-  const renderRootView = () => {
+  // const renderRootView = () => {
+    const dispatch = useDispatch()
+
+    const checkUser = async () => {
+      let account = await getUserProfileInfo()
+      console.log("Acount", account);
+      if (account) {
+        console.log("account ID", account.user_id);
+        dispatch(setuser(account))
+      }
+    }
+
+    useEffect(()=>{
+      checkUser()
+    },[])
+
+    // const login_status = useSelector((state) => state.User.login_status)
+    // console.log("login status",login_status)
+
     return (
       <SafeAreaProvider>
         <StatusBar backgroundColor={'#ED7421'}/>
         {splash ? (
           <Splash />
         ) : (
-          <NavigationContainer>
-            <RootStack.Navigator initialRouteName="Login">
-              <RootStack.Screen
-                name="Login"
-                component={Login}
-                options={{headerShown: false}}
-              />
-              {screens.map((item, index) => (
-                <RootStack.Screen
-                  key={index}
-                  name={item.name}
-                  component={item.components}
-                  options={{
-                    headerBackTitle: item.headerBackTitle ?? item.name,
-                    title: item.headerBackTitle,
-                    headerTintColor: '#FFFFFF',
-                    headerStyle: {backgroundColor: '#ED7421'},
-                    headerShown: false,
-                  }}
-                />
-              ))}
-            </RootStack.Navigator>
-          </NavigationContainer>
-        )}
+    //       <NavigationContainer>
+    // {login_status ?
+    //        (<>
+    //      <RootStack.Navigator initialRouteName="Login">
+    //           {/* <RootStack.Screen
+    //             name="Login"
+    //             component={Login}
+    //             options={{headerShown: false}}
+    //           /> */}
+    //           {screens.map((item, index) => (
+    //             <RootStack.Screen
+    //               key={index}
+    //               name={item.name}
+    //               component={item.components}
+    //               options={{
+    //                 headerBackTitle: item.headerBackTitle ?? item.name,
+    //                 title: item.headerBackTitle,
+    //                 headerTintColor: '#FFFFFF',
+    //                 headerStyle: {backgroundColor: '#ED7421'},
+    //                 headerShown: false,
+    //               }}
+    //             />
+    //           ))}
+    //         </RootStack.Navigator>
+    //         </>
+    //      ):(
+    //      <>
+    //      <RootStack.Navigator initialRouteName="Login">
+    //           <RootStack.Screen
+    //             name="Login"
+    //             component={Login}
+    //             options={{headerShown: false}}
+    //           />
+    //           {screens1.map((item, index) => (
+    //             <RootStack.Screen
+    //               key={index}
+    //               name={item.name}
+    //               component={item.components}
+    //               options={{
+    //                 headerBackTitle: item.headerBackTitle ?? item.name,
+    //                 title: item.headerBackTitle,
+    //                 headerTintColor: '#FFFFFF',
+    //                 headerStyle: {backgroundColor: '#ED7421'},
+    //                 headerShown: false,
+    //               }}
+    //             />
+    //           ))}
+    //         </RootStack.Navigator>
+    //      </>)}
+            
+    //       </NavigationContainer>
+           <Routes/>
+      )}
       </SafeAreaProvider>
     );
   };
-  const store = storeConfig();
-  return <Provider store={store}>{renderRootView()}</Provider>;
-};
+  // const store = storeConfig();
+  // return <Provider store={store}>{renderRootView()}</Provider>;
+// };
 
 export default App;

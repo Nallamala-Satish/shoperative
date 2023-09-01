@@ -24,8 +24,8 @@ import {NavigationBar} from '../CustomComponents/NavigationBar';
 const Home = () => {
   useEffect(() => {
     const handleBackButton = () => {
-      BackHandler.exitApp(); // This will close the app
-      return true; // Return true to prevent default back button behavior
+      // BackHandler.exitApp(); // This will close the app
+      return false; // Return true to prevent default back button behavior
     };
 
     BackHandler.addEventListener('hardwareBackPress', handleBackButton);

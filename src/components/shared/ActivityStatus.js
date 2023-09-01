@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View,Modal} from 'react-native';
 import {bgColor, shadowColor} from '../../theme/colors';
 
-const ActivityStatus = ({message}) => {
+const ActivityStatus = ({message,loading}) => {
   const statusIndicator = () => {
     const spinnerColor = bgColor;
 
@@ -11,14 +11,37 @@ const ActivityStatus = ({message}) => {
   };
 
   return (
-    <View style={styles.fullScreenCoverView}>
-      <View style={styles.activityContainer} testID={'activityStatusIndicator'}>
-        {statusIndicator()}
-        <Text testID={'activityStatusMessage'} style={styles.statusText}>
-          {message}
-        </Text>
+    // <View style={styles.fullScreenCoverView}>
+    //   <View style={styles.activityContainer} testID={'activityStatusIndicator'}>
+    //     {statusIndicator()}
+    //     <Text testID={'activityStatusMessage'} style={styles.statusText}>
+    //       {message}
+    //     </Text>
+    //   </View>
+    // </View>
+    <Modal
+      transparent={true}
+      animationType={'none'}
+      visible={loading}
+      onRequestClose={() => {
+        console.log('close modal');
+      }}>
+      <View style={styles.fullScreenCoverView}>
+        <View style={styles.activityContainer}>
+          <ActivityIndicator
+            size={'large'}
+            color={bgColor}
+            animating={loading}
+          />
+          {/* {info && (
+            <AppText preset={'PARAGRAPH_1M_16'} color={'white'} tx={info} />
+          )} */}
+         <Text testID={'activityStatusMessage'} style={styles.statusText}>
+           {message}
+         </Text>
+        </View>
       </View>
-    </View>
+    </Modal>
   );
 };
 

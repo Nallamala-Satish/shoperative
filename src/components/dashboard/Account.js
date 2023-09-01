@@ -8,14 +8,20 @@ import {
   ScrollView,
   Image,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import profileImage from '../../images/userimag.jpg';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import { baseURL } from '../../utils/Constants';
+import { saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
+import { logout } from '../../Redux/reducer/User';
 
 const Account = ({navigation}) => {
-  const {user_details: profileResult} = useSelector(state => state.profile);
+const dispatch=useDispatch()
+
+  // const {user_details: profileResult} = useSelector(state => state.profile);
   const CustomFeilds = ({iconName, title, onPressButton}) => {
     return (
       <Pressable
@@ -29,6 +35,31 @@ const Account = ({navigation}) => {
       </Pressable>
     );
   };
+
+  const Logout = async()=>{
+    const myHeaders = new Headers();
+myHeaders.append("Authorization", "Bearer b93aadc7b193fb83b5c42df157c90576f4f98297057306953668b7bdf6a5bc8f.VXZbSgHS+XVi/GGf9NIlTQ==");
+myHeaders.append("Cookie", "PHPSESSID=32d91d6fb8c201761f779fb2ff6bafc0");
+
+const raw = "";
+
+const requestOptions = {
+  method: 'GET',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+ await fetch(`${baseURL}/logout`, requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    console.log('logout res',result)
+    saveUserProfileInfo({})
+    dispatch(logout());
+    navigation.navigate('Login')
+  })
+  .catch(error => console.log('error', error));
+  }
 
   return (
     <View style={styles.container}>
@@ -51,9 +82,9 @@ const Account = ({navigation}) => {
         contentContainerStyle={{alignItems: 'center'}}
         style={styles.cardContainer}>
         <Text style={styles.profileNameTextStyles}>
-          {profileResult.username}
+          {/* {profileResult.username} */}
         </Text>
-        <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text>
+        {/* <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text> */}
 
         <CustomFeilds iconName={'user'}
          title={'My Profile'}
@@ -104,7 +135,16 @@ const Account = ({navigation}) => {
           onPressButton={'MyWallet'}
         />
 
-        <CustomFeilds iconName={'power-off'} title={'Logout'} onPressButton={'Login'} />
+        {/* <CustomFeilds iconName={'power-off'} title={'Logout'} onPressButton={logout()} /> */}
+        <TouchableOpacity onPress={()=>{Logout()}}
+         style={styles.boxContainerStyles}
+        >
+        <View style={styles.insideBoxContainerStyles}>
+          <FontAwesome name={'power-off'} size={20} style={styles.boxIconStyles} />
+          <Text style={styles.boxTextStyles}>{'Logout'}</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} />
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

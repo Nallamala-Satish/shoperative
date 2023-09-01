@@ -10,6 +10,8 @@ import {login} from '../store/actions/loginActions';
 import {useNavigation} from '@react-navigation/native';
 import {Snackbar} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
+import { baseURL } from '../utils/Constants';
+import { saveUserProfileInfo } from '../utils/AsyncStorageHelper';
 
 const Login = () => {
   const deviceInfo = () => {
@@ -24,27 +26,21 @@ const Login = () => {
 
   //below two lines will bring the data from API
   const dispatch = useDispatch();
-  const loginResult = useSelector(state => state.login);
-
+  // const loginResult = useSelector(state => state.login);
+ 
+  const[loading,setLoading]=useState(false)
   const navigation = useNavigation();
-  const [username, setUsername] = useState('vishnu@gmail.com');
-  const [password, SetPassword] = useState('456456');
+  const [username, setUsername] = useState('');
+  const [password, SetPassword] = useState('');
   const [visible, setVisible] = useState(false);
   const [err, setErr] = useState('');
   const [deviceToken, setDeviceToken] = useState();
+console.log(deviceToken)
 
   const onDismiss = () => {
     setVisible(false);
   };
 
-  useEffect(() => {
-    if (loginResult.message === 'success') {
-      navigation.navigate('DrawerView');
-    } else if (loginResult.message === 'fail') {
-      setErr(loginResult.description);
-      setVisible(true);
-    }
-  });
 
   const isValidUsername = value => {
     // Email validation
@@ -90,8 +86,51 @@ const Login = () => {
     );
   };
 
+  const Login = async()=>{
+    setLoading(true)
+    const myHeaders = new Headers();
+     myHeaders.append("Content-Type", "application/json");
+     myHeaders.append("Cookie", "PHPSESSID=a0aa86b9e40829e64a1303fad8a5964c");
+
+    let raw = JSON.stringify({
+      "loginusername": `${username}`,
+      "loginpassword": `${password}`,
+      "devicetoken": `${deviceToken}`
+    });
+    
+    let requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    
+   await fetch(`${baseURL}/login`, requestOptions)
+      .then(response => response.json())
+      .then(result =>{
+         let loginResult =result;
+         console.log("login res",loginResult )
+          if (loginResult.message === 'success') {
+            const userInfo =loginResult.user_details
+             saveUserProfileInfo(userInfo);
+          navigation.navigate('DrawerView');
+          setLoading(false)
+            } else if (loginResult.message === 'fail') {
+            setErr(loginResult.description);
+           setVisible(true);
+           setLoading(false)
+         }
+        })
+      .catch(error =>{
+         console.log('error', error)
+        setLoading(false)
+        });
+    setLoading(false)
+  }
+
   return (
     <View style={styles.container}>
+       <ActivityStatus message={'Login inprogress'} loading={loading} />
       <Text style={styles.headingStyles}>Login</Text>
       <View style={styles.FeildViewStyles}>
         <Foundation style={styles.iconStylesmobile} name="mobile" size={25} />
@@ -128,6 +167,7 @@ const Login = () => {
           //get username and password and pass this method instead of hardcoded values
           deviceInfo();
           LoginValidation();
+          Login()
           // if (loginResult.message === 'success') {
           //   navigation.navigate('DrawerView');
           // } else if (loginResult.message === 'fail') {
@@ -149,9 +189,9 @@ const Login = () => {
         </Text>
       </Text>
 
-      {loginResult.loginStarted && (
-        <ActivityStatus message={'Login inprogress'} />
-      )}
+      {/* {loginResult.loginStarted && (
+        <ActivityStatus message={'Login inprogress'} loading={loading} />
+       )} */}
       {snackBar()}
     </View>
   );
