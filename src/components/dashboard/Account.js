@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import {
   View,
   Text,
@@ -15,11 +15,22 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import profileImage from '../../images/userimag.jpg';
 import {useDispatch, useSelector} from 'react-redux';
 import { baseURL } from '../../utils/Constants';
-import { saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
+import { getUserProfileInfo, saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
 import { logout } from '../../Redux/reducer/User';
 
 const Account = ({navigation}) => {
 const dispatch=useDispatch()
+const[profileResult,setProfileResult]=useState('')
+
+const getUserData=async()=>{
+  const userinfo = await getUserProfileInfo()
+  setProfileResult(userinfo)
+  console.log("userinfo",userinfo)
+}
+
+useEffect(()=>{
+  getUserData()
+},[])
 
   // const {user_details: profileResult} = useSelector(state => state.profile);
   const CustomFeilds = ({iconName, title, onPressButton}) => {
@@ -82,9 +93,9 @@ const requestOptions = {
         contentContainerStyle={{alignItems: 'center'}}
         style={styles.cardContainer}>
         <Text style={styles.profileNameTextStyles}>
-          {/* {profileResult.username} */}
+          {profileResult.user_name}
         </Text>
-        {/* <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text> */}
+        <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text>
 
         <CustomFeilds iconName={'user'}
          title={'My Profile'}

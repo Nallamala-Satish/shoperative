@@ -35,7 +35,7 @@ const Login = () => {
   const [visible, setVisible] = useState(false);
   const [err, setErr] = useState('');
   const [deviceToken, setDeviceToken] = useState();
-console.log(deviceToken)
+// console.log(deviceToken)
 
   const onDismiss = () => {
     setVisible(false);
@@ -113,7 +113,7 @@ console.log(deviceToken)
           if (loginResult.message === 'success') {
             const userInfo =loginResult.user_details
              saveUserProfileInfo(userInfo);
-          navigation.navigate('DrawerView');
+          navigation.navigate('MainRoute');
           setLoading(false)
             } else if (loginResult.message === 'fail') {
             setErr(loginResult.description);
@@ -168,12 +168,7 @@ console.log(deviceToken)
           deviceInfo();
           LoginValidation();
           Login()
-          // if (loginResult.message === 'success') {
-          //   navigation.navigate('DrawerView');
-          // } else if (loginResult.message === 'fail') {
-          //   setErr(loginResult.description);
-          //   setVisible(true);
-          // }
+          
         }}>
         <Text style={styles.buttonTextStyles}>LOG IN</Text>
       </Pressable>
@@ -189,9 +184,6 @@ console.log(deviceToken)
         </Text>
       </Text>
 
-      {/* {loginResult.loginStarted && (
-        <ActivityStatus message={'Login inprogress'} loading={loading} />
-       )} */}
       {snackBar()}
     </View>
   );
