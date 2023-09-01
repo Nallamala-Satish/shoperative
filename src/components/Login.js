@@ -12,6 +12,7 @@ import {Snackbar} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 import { baseURL } from '../utils/Constants';
 import { saveUserProfileInfo } from '../utils/AsyncStorageHelper';
+import { setuser } from '../Redux/reducer/User';
 
 const Login = () => {
   const deviceInfo = () => {
@@ -113,6 +114,7 @@ const Login = () => {
           if (loginResult.message === 'success') {
             const userInfo =loginResult.user_details
              saveUserProfileInfo(userInfo);
+             dispatch(setuser(userInfo))
           navigation.navigate('MainRoute');
           setLoading(false)
             } else if (loginResult.message === 'fail') {
