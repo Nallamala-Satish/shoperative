@@ -8,19 +8,21 @@ import {
   ScrollView,
   Image,
   Pressable,
-  TouchableOpacity,
+  TouchableOpacity,Alert
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import profileImage from '../../images/userimag.jpg';
 import {useDispatch, useSelector} from 'react-redux';
 import { baseURL } from '../../utils/Constants';
-import { getUserProfileInfo, saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
+import { getUserProfileInfo, saveAccountInfo, saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
 import { logout } from '../../Redux/reducer/User';
 
 const Account = ({navigation}) => {
 const dispatch=useDispatch()
 const[profileResult,setProfileResult]=useState('')
+const[profileRes,setProfileRes]=useState('')
+// console.log("profileRes",profileRes)
 
 const getUserData=async()=>{
   const userinfo = await getUserProfileInfo()
@@ -30,6 +32,7 @@ const getUserData=async()=>{
 
 useEffect(()=>{
   getUserData()
+  getProfile()
 },[])
 
   // const {user_details: profileResult} = useSelector(state => state.profile);
@@ -72,6 +75,32 @@ const requestOptions = {
   .catch(error => console.log('error', error));
   }
 
+  const getProfile = async ()=>{
+  
+    const res= await getUserProfileInfo()
+    console.log(res.token)
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${res.token}`);
+    myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
+    
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    console.log(myHeaders)
+     await fetch(`${baseURL}/profile`, requestOptions)
+      .then(response => response.json())
+      .then(result =>{
+         console.log("profile res",result.user_details)
+         if(result.message == 'success'){
+         setProfileRes(result.user_details)
+         }
+        })
+      .catch(error => {
+        console.log('error', error)
+      });
+    }
   return (
     <View style={styles.container}>
       <View style={styles.topContainerStyles}>
@@ -97,10 +126,21 @@ const requestOptions = {
         </Text>
         <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text>
 
-        <CustomFeilds iconName={'user'}
+        {/* <CustomFeilds iconName={'user'}
          title={'My Profile'}
          onPressButton={'MyProfile'}
-        />
+        /> */}
+          <TouchableOpacity onPress={()=>{
+          navigation.navigate('MyProfile',{profileRes:profileRes,getProfile:getProfile})
+        }}
+         style={styles.boxContainerStyles}
+        >
+        <View style={styles.insideBoxContainerStyles}>
+          <FontAwesome name={'user'} size={20} style={styles.boxIconStyles} />
+          <Text style={styles.boxTextStyles}>{'My Profile'}</Text>
+        </View>
+        <Ionicons name="chevron-forward" size={20} />
+        </TouchableOpacity> 
 
         <CustomFeilds
           iconName={'shopping-bag'}
@@ -147,7 +187,13 @@ const requestOptions = {
         />
 
         {/* <CustomFeilds iconName={'power-off'} title={'Logout'} onPressButton={logout()} /> */}
-        <TouchableOpacity onPress={()=>{Logout()}}
+        <TouchableOpacity onPress={()=>{
+           Alert.alert("Logout", "Are you want Logout ?",
+           [
+             { text: "Cancel", onPress: () => { } },
+             { text: "Ok", onPress: () => Logout() }
+           ])
+        }}
          style={styles.boxContainerStyles}
         >
         <View style={styles.insideBoxContainerStyles}>
@@ -206,6 +252,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     width: '100%',
+    marginBottom:10
   },
   boxContainerStyles: {
     flexDirection: 'row',

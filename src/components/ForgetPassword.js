@@ -7,6 +7,7 @@ import {Snackbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {forgetPassword} from '../store/actions/loginActions';
+import { baseURL } from '../utils/Constants';
 
 const ForgetPassword = () => {
   const navigation = useNavigation();
@@ -34,6 +35,34 @@ const ForgetPassword = () => {
     );
   };
 
+const forgetPassword =async ()=>{
+  var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("Cookie", "PHPSESSID=9f2645f941c1180cddd1bde18ac7f7ad");
+
+var raw = JSON.stringify({
+  "email": `${email}`
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch(`${baseURL}/forgot-password`, requestOptions)
+  .then(response => response.json())
+  .then(result =>{ 
+    // console.log('forget res',result)
+    if(result.message == 'Success'){
+      console.log('forget re',result.description)
+      setErr(result.description);
+    }
+  })
+  .catch(error => console.log('error', error));
+}
+
   const handleEmailInput = data => {
     setEmail(data);
   };
@@ -41,7 +70,7 @@ const ForgetPassword = () => {
   const ForgetPasswordValidation = () => {
     if (email === '') {
       setVisible(true);
-      setErr('Enter Mobile Number');
+      setErr('Enter Email');
     } else if (!emailRegex.test(email)) {
       setVisible(true);
       setErr('Enter a Valid Email');
@@ -55,12 +84,12 @@ const ForgetPassword = () => {
     <View style={styles.container}>
       <Text style={styles.headingStyles}>Forget Password</Text>
       <View style={styles.FeildViewStyles}>
-        <Foundation style={styles.iconStylesmobile} name="mobile" size={30} />
+        {/* <Foundation style={styles.iconStylesmobile} name="mobile" size={30} /> */}
         <TextInput
           style={styles.inputFeildStyles}
-          placeholder="Mobile Number"
+          placeholder="Email"
           placeholderTextColor={placeHolderTextColor}
-          keyboardType="number-pad"
+          // keyboardType="number-pad"
           onChangeText={handleEmailInput}
         />
       </View>
@@ -68,13 +97,16 @@ const ForgetPassword = () => {
         style={styles.buttonStyles}
         onPress={() => {
           ForgetPasswordValidation();
-          dispatch(forgetPassword(email));
-          setErr(forgetPasswordResult.description);
+          // dispatch(forgetPassword(email));
+          forgetPassword()
+          // setErr(forgetPasswordResult.description);
         }}>
         <Text style={styles.buttonTextStyles}>SEND OTP</Text>
       </Pressable>
       <Text style={styles.bottomTextStyles}>
-        Don't Have An Account? <Text style={{color: '#ED7421'}}>Register</Text>
+        Don't Have An Account? <Text style={{color: '#ED7421'}}  onPress={() => {
+            navigation.navigate('Register');
+          }}>Register</Text>
       </Text>
       <Text />
       {snackBar()}

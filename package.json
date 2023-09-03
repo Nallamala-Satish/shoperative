@@ -7,7 +7,15 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "android-build-apk": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android/ && ./gradlew assembleDebug && cd ..",
+    "pod-install": "cd ios && pod install && cd ..",
+    "ios-pod-clean": "cd ios && rm -rf /Library/Caches/CocoaPods && rm -rf Pods && rm -rf /Library/Developer/Xcode/DerivedData/*  && pod setup && pod install && cd ..",
+    "clean-android": "cd android && ./gradlew clean && ./gradlew --stop && ./gradlew cleanBuildCache && cd  ..",
+    "android-linux": "npx react-native run-android --terminal \"$PWD/shgnome\"",
+    "android-build-release": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android/ && ./gradlew assembleRelease && cd ..",
+    "ios-build": "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
+    "android-build": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",

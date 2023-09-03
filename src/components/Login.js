@@ -225,6 +225,7 @@ const styles = StyleSheet.create({
     height: '100%',
     verticalAlign: 'middle',
     textAlign: 'center',
+    marginTop:20
   },
   iconStyleslock: {
     flex: 1,
@@ -232,6 +233,7 @@ const styles = StyleSheet.create({
     height: '100%',
     verticalAlign: 'middle',
     textAlign: 'center',
+    marginTop:20
   },
   forgetPasswordStyles: {
     color: '#ED7421',

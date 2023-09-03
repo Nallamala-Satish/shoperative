@@ -80,7 +80,7 @@ var requestOptions = {
   const onDismiss = () => {
     setVisible(false);
   };
-
+console.log(income,profession)
   const snackBar = () => {
     return (
       <Snackbar
@@ -147,7 +147,7 @@ var requestOptions = {
 
   // Register Validation
   const RegisterValidation = () => {
-    if (name === '') {
+    if (name.length < 3) {
       setVisible(true);
       setErr('Please Enter Name');
     } else if (mobileNumber === '') {
