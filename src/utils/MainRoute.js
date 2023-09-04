@@ -34,6 +34,7 @@ import { MySharedCart } from '../components/ProfileComponents/MySharedCart';
 import { AddressBook } from '../components/ProfileComponents/AddressBook';
 import { useSelector } from 'react-redux';
 import { Login } from '../components/Login';
+import productList from '../components/dashboard/Categories/productList';
 
 const RootStack = createStackNavigator();
 const screens = [
@@ -189,6 +190,11 @@ const screens = [
     name: 'AddressBook',
     components: AddressBook,
     headerBackTitle: 'AddressBook',
+  },
+  {
+    name: 'productList',
+    components: productList,
+    headerBackTitle: 'productList',
   },
 ];
 const MainRoute = () => {

@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   BackHandler,
+  TouchableOpacity,
 } from 'react-native';
 import {SearchView} from '../CustomComponents/SearchView';
 import {MapLocationComponent} from '../CustomComponents/MapLocationComponent';
@@ -20,8 +21,11 @@ import {
 } from '../../utils/Constants';
 import BeautyImage from '../../images/DashBoardImages/beauty-hygiene.png';
 import {NavigationBar} from '../CustomComponents/NavigationBar';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
+const navigation=useNavigation()
+
   useEffect(() => {
     const handleBackButton = () => {
       // BackHandler.exitApp(); // This will close the app
@@ -37,8 +41,10 @@ const Home = () => {
   const categories = (imageSource, productTitle) => {
     return (
       <View style={ss.CategoriesProductContainer}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('productList')}}>
         <Image source={imageSource} style={ss.categoriesImageStyles} />
         <Text style={ss.productTextStyles}>{productTitle}</Text>
+        </TouchableOpacity>
       </View>
     );
   };
