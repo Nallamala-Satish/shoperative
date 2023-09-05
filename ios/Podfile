@@ -21,7 +21,7 @@ target 'Shoperative' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => FlipperConfiguration.enabled,
+    # :flipper_configuration => FlipperConfiguration.enabled,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -38,6 +38,6 @@ target 'Shoperative' do
       # necessary for Mac Catalyst builds
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    # __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
