@@ -3,7 +3,7 @@ import { View, Text,StyleSheet,FlatList } from 'react-native';
 import { HeaderComponent } from '../../CustomComponents/HeaderComponent';
 import { Card } from 'react-native-paper';
 
-const productList = () => {
+const ProductList = () => {
     const Item =()=>{
         return(
             <View>
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
       padding: 10,
     },
 })
-export default productList;
+export default ProductList;
