@@ -192,9 +192,9 @@ const screens = [
     headerBackTitle: 'AddressBook',
   },
   {
-    name: 'productList',
+    name: 'ProductList',
     components: ProductList,
-    headerBackTitle: 'productList',
+    headerBackTitle: 'ProductList',
   },
 ];
 const MainRoute = () => {

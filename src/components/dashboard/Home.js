@@ -41,7 +41,7 @@ const navigation=useNavigation()
   const categories = (imageSource, productTitle) => {
     return (
       <View style={ss.CategoriesProductContainer}>
-        <TouchableOpacity onPress={()=>{navigation.navigate('productList')}}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('ProductList')}}>
         <Image source={imageSource} style={ss.categoriesImageStyles} />
         <Text style={ss.productTextStyles}>{productTitle}</Text>
         </TouchableOpacity>
