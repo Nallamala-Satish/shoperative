@@ -1,19 +1,22 @@
 /* eslint-disable react/no-unstable-nested-components */
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   Image,
-  Pressable,
+  Pressable,FlatList,TouchableOpacity
 } from 'react-native';
 import {HeaderComponent} from '../CustomComponents/HeaderComponent';
 import cosmetics from '../../images/cosmetics.png';
 import {useNavigation} from '@react-navigation/native';
+import { baseURL } from '../../utils/Constants';
 
 const Categories = () => {
   const navigation = useNavigation();
+  const [categoriesData,setCategoryData]=useState([])
+
   const Product = (imageSource, productName) => {
     return (
       <View style={styles.productContainerStyles}>
@@ -26,11 +29,47 @@ const Categories = () => {
       </View>
     );
   };
+
+  const Item =({item})=>{
+    return(
+      <View style={styles.productContainerStyles}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('ProductList')}}>
+      <Image source={{uri:`${item.image}`}} style={styles.imageContainerStyles} />
+      <Text style={styles.productNameStyles}>{item.menu_title}</Text>
+      </TouchableOpacity>
+    </View>
+    )
+}
+
+  const getCategories = async ()=>{
+    var myHeaders = new Headers();
+    myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
+    
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    
+    fetch(`${baseURL}/categories`, requestOptions)
+      .then(response => response.json())
+      .then(result =>{
+         console.log("categories res",result.categories)
+         if(result.message == 'success'){
+          setCategoryData(result.categories.categories)
+         }
+        })
+      .catch(error => console.log('error', error));
+  }
+
+  useEffect(()=>{
+    getCategories()
+  },[])
   return (
     <>
       <HeaderComponent title={'All Categories'} />
       <View style={styles.container}>
-        <View style={styles.rowDirectionView}>
+        {/* <View style={styles.rowDirectionView}>
           {Product(cosmetics, 'Cosmetics')}
           {Product(cosmetics, 'Cosmetics')}
           {Product(cosmetics, 'Cosmetics')}
@@ -59,7 +98,14 @@ const Categories = () => {
           {Product(cosmetics, 'Cosmetics')}
           {Product(cosmetics, 'Cosmetics')}
           {Product(cosmetics, 'Cosmetics')}
-        </View>
+        </View> */}
+         <FlatList
+          // horizontal
+          numColumns={4}
+          data={categoriesData}
+           renderItem={Item}
+           keyExtractor={item =>item.menu_id}
+          />
       </View>
     </>
   );
@@ -85,6 +131,8 @@ const styles = StyleSheet.create({
   },
   productContainerStyles: {
     alignItems: 'center',
+    margin:10,
+    padding:10,
   },
   rowDirectionView: {
     width: '100%',
@@ -98,6 +146,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#4C4C4C',
     fontWeight: '700',
+    width:100
   },
 });
 

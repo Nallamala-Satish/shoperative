@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,7 @@ import {
   ScrollView,
   Image,
   BackHandler,
-  TouchableOpacity,
+  TouchableOpacity,FlatList
 } from 'react-native';
 import {SearchView} from '../CustomComponents/SearchView';
 import {MapLocationComponent} from '../CustomComponents/MapLocationComponent';
@@ -18,6 +18,7 @@ import {
   f2,
   f3,
   f4,
+  baseURL,
 } from '../../utils/Constants';
 import BeautyImage from '../../images/DashBoardImages/beauty-hygiene.png';
 import {NavigationBar} from '../CustomComponents/NavigationBar';
@@ -25,6 +26,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
 const navigation=useNavigation()
+const [categoriesData,setCategoryData]=useState([])
 
   useEffect(() => {
     const handleBackButton = () => {
@@ -48,7 +50,16 @@ const navigation=useNavigation()
       </View>
     );
   };
-
+  const Item =({item})=>{
+    return(
+      <View style={ss.CategoriesProductContainer}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('ProductList')}}>
+      <Image source={{uri:`${item.image}`}} style={ss.categoriesImageStyles} />
+      <Text style={ss.productTextStyles}>{item.menu_title}</Text>
+      </TouchableOpacity>
+    </View>
+    )
+}
   const servicesContainer = (imageSource, productTitle) => {
     return (
       <View
@@ -64,6 +75,31 @@ const navigation=useNavigation()
     );
   };
 
+  const getCategories = async ()=>{
+    var myHeaders = new Headers();
+    myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
+    
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+    
+    fetch(`${baseURL}/categories`, requestOptions)
+      .then(response => response.json())
+      .then(result =>{
+        //  console.log("categories res",result.categories)
+         if(result.message == 'success'){
+          setCategoryData(result.categories.categories)
+         }
+        })
+      .catch(error => console.log('error', error));
+  }
+
+  useEffect(()=>{
+    getCategories()
+  },[])
+
   return (
     <View style={ss.container}>
       <NavigationBar />
@@ -77,11 +113,18 @@ const navigation=useNavigation()
             alignItems: 'center',
           }}
           style={ss.categoriesContainerStyles}>
-          {categories(BeautyImage, 'Oil & Natural Gas')}
+          {/* {categories(BeautyImage, 'Oil & Natural Gas')}
           {categories(BeautyImage, 'Herbal & Ayurvedic')}
           {categories(BeautyImage, 'Soap & Cleaning')}
-          {categories(BeautyImage, 'Utensils')}
+          {categories(BeautyImage, 'Utensils')} */}
+          <FlatList
+          horizontal
+          data={categoriesData}
+           renderItem={Item}
+           keyExtractor={item =>item.menu_id}
+          />
         </ScrollView>
+        
         <ImageCurousel imageData={imageCourselData} />
         <ScrollView
           showsHorizontalScrollIndicator={false}
@@ -128,7 +171,8 @@ const ss = StyleSheet.create({
   },
   categoriesImageStyles: {
     width: 75,
-    height: 60,
+    height: 50,
+    borderRadius:10
   },
   productTextStyles: {
     fontSize: 12,
