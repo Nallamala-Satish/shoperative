@@ -53,7 +53,7 @@ const [categoriesData,setCategoryData]=useState([])
   const Item =({item})=>{
     return(
       <View style={ss.CategoriesProductContainer}>
-      <TouchableOpacity onPress={()=>{navigation.navigate('ProductList')}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('SubCategories')}}>
       <Image source={{uri:`${item.image}`}} style={ss.categoriesImageStyles} />
       <Text style={ss.productTextStyles}>{item.menu_title}</Text>
       </TouchableOpacity>

@@ -33,7 +33,7 @@ const Categories = () => {
   const Item =({item})=>{
     return(
       <View style={styles.productContainerStyles}>
-      <TouchableOpacity onPress={()=>{navigation.navigate('ProductList')}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('SubCategories')}}>
       <Image source={{uri:`${item.image}`}} style={styles.imageContainerStyles} />
       <Text style={styles.productNameStyles}>{item.menu_title}</Text>
       </TouchableOpacity>
