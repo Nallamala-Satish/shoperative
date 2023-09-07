@@ -1,18 +1,118 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image, ScrollView} from 'react-native';
+import React,{useEffect,useState} from 'react';
+import {View, Text, StyleSheet, Image, ScrollView,TouchableOpacity,FlatList} from 'react-native';
 import {HeaderComponent} from '../../CustomComponents/HeaderComponent';
 import cosmeticsImage from '../../../images/cosmetics.png';
 import {Pressable} from '@react-native-material/core';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation,useRoute} from '@react-navigation/native';
+import { baseURL } from '../../../utils/Constants';
+import ActivityStatus from '../../shared/ActivityStatus';
+import {Card} from 'react-native-paper'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const Cosmetics = () => {
   const navigation = useNavigation();
+   const route=useRoute()
+   const{id,subId}=route.params
+   const [products,setProducts]=useState([])
+const[loading,setLoading]=useState(false)
+const[like,setLike]=useState(false)
+const[itemId,setItemId]=useState()
+
+console.log(itemId)
+
+const getProducts = async ()=>{
+  setLoading(true)
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("Cookie", "PHPSESSID=5b8d0a77d015b0da55ede1ea2031b5bd");
+  
+  let raw = JSON.stringify({
+    "menu_id": id,
+    "submenu_id": subId
+  });
+  
+  let requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+  
+  fetch(`${baseURL}/getProducts`, requestOptions)
+    .then(response => response.json())
+    .then(result => {
+      console.log("products res",result)
+      if(result.message == 'Products list'){
+        setProducts(result.products)
+          setLoading(false)
+      }
+      setLoading(false)
+    })
+    .catch(error => {
+      console.log('error', error)
+      setLoading(false)
+    });
+}
+
+const Item =({item})=>{
+  console.log(item.id)
+  return(
+      <View style={{margin:10,}}>
+        <Card style={{padding:10,backgroundColor:'white', elevation: 10,}}>
+              {
+               item.id ==  itemId && like == true ?
+                 (
+                 <TouchableOpacity onPress={()=>{setItemId(item.id), setLike(!like)}}>
+                 <Ionicons name="heart-circle-outline" size={30} style={{ alignSelf: 'flex-end',padding:10,color:'red'}}/>
+                 </TouchableOpacity>
+                 ) :
+                 ( 
+                  <TouchableOpacity onPress={()=>{setItemId(item.id),setLike(!like)}}>
+                  <Ionicons name="heart-outline" size={30} style={{ alignSelf: 'flex-end',padding:10,color:'red'}}/>
+                  </TouchableOpacity>
+                 ) 
+              }
+            <TouchableOpacity onPress={()=>{
+                 navigation.navigate('ProductDetails',{productId:item.id})
+             }} >
+                 <Image source={{uri:item.prod_image}} style={styles.imageStyles}  />
+              <Text style={{color:'black',fontWeight:'bold',fontSize:20,padding:10}}>{item.prod_name}</Text>
+              <Text style={{color:'lightgray',padding:5}}>{item.prod_desc}</Text>
+              <Text style={{color:'black',fontWeight:'bold',color:'red',fontSize:20}}> Rs.{item.selling_price}  <Text style={{fontSize:15}}>({item.unit_of_measure})</Text></Text>
+          </TouchableOpacity>
+          <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:10,}}>
+            <TouchableOpacity style={{backgroundColor:'darkorange',borderRadius:5,padding:10,}}>
+              <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+              <Text style={{color:'white',alignSelf:'center',fontWeight:'bold'}}>Share Cart   </Text>
+              <MaterialIcons name="add-shopping-cart" size={30} style={{color:'white'}}/>
+              </View>
+                
+            </TouchableOpacity>
+            <TouchableOpacity style={{backgroundColor:'lightgreen',padding:10,borderRadius:5}}>
+            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+              <Text style={{color:'white',alignSelf:'center',fontWeight:'bold'}}>basket  </Text>
+              <FontAwesome name="shopping-basket" size={30} style={{color:'white'}}/>
+              </View>
+          </TouchableOpacity>
+          </View>
+          </Card>
+      </View>
+  )
+}
+
+useEffect(()=>{
+  getProducts()
+},[])
   return (
     <>
-      <HeaderComponent title="Cosmetics" />
+      <HeaderComponent title="Products" />
+      <ActivityStatus message='' loading={loading}/>
       <View style={styles.container}>
+      <ScrollView  showsVerticalScrollIndicator={false}>
         <View style={styles.categoriesProducts}>
-          <Pressable
+          {/* <Pressable
             style={styles.productContainerStyles}
             onPress={() => navigation.navigate('ProductDetails')}>
             <Image source={cosmeticsImage} style={styles.imageStyles} />
@@ -53,8 +153,15 @@ const Cosmetics = () => {
             <Image source={cosmeticsImage} style={styles.imageStyles} />
             <Text style={styles.productNameStyles}>Beauty Product 6</Text>
             <Text style={styles.productPriceStyles}>₹ 539</Text>
-          </Pressable>
+          </Pressable> */}
+           <FlatList
+          //  numColumns={2}
+             data={products || []}
+             renderItem={Item}
+             keyExtractor={item =>item.id}
+           />  
         </View>
+        </ScrollView>
       </View>
     </>
   );
@@ -72,8 +179,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   imageStyles: {
-    width: '60%',
-    height: 65,
+    width: 200,
+    height: 120,
+    borderRadius:1
   },
   productContainerStyles: {
     width: '48%',

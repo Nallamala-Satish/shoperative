@@ -53,7 +53,7 @@ const [categoriesData,setCategoryData]=useState([])
   const Item =({item})=>{
     return(
       <View style={ss.CategoriesProductContainer}>
-      <TouchableOpacity onPress={()=>{navigation.navigate('SubCategories')}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('SubCategories',{id:item.menu_id})}}>
       <Image source={{uri:`${item.image}`}} style={ss.categoriesImageStyles} />
       <Text style={ss.productTextStyles}>{item.menu_title}</Text>
       </TouchableOpacity>
@@ -172,7 +172,7 @@ const ss = StyleSheet.create({
   categoriesImageStyles: {
     width: 75,
     height: 50,
-    borderRadius:10
+    borderRadius:5
   },
   productTextStyles: {
     fontSize: 12,

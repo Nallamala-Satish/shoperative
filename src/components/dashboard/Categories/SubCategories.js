@@ -3,10 +3,13 @@ import { View, Text,StyleSheet,FlatList,TouchableOpacity } from 'react-native';
 import { HeaderComponent } from '../../CustomComponents/HeaderComponent';
 import { baseURL } from '../../../utils/Constants';
 import ActivityStatus from '../../shared/ActivityStatus';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation ,useRoute} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SubCategories = () => {
+  const route=useRoute()
+  const {id}=route.params;
+  console.log(id)
 const [loading,setLoading]=useState(false)
 const[subCategoriesList,setSubcategoriesList]=useState([])
 const navigation=useNavigation()
@@ -15,7 +18,7 @@ const navigation=useNavigation()
         return(
             <View style={{margin:10}}>
                   <TouchableOpacity onPress={()=>{
-                       navigation.navigate('Cosmetics')
+                       navigation.navigate('Cosmetics',{id:id,subId:item.submenu_id})
                    }} style={{padding:10,backgroundColor:'#F3F3F3'}} >
                    <View style={{flexDirection:'row',justifyContent: 'space-between',}}>
                     <Text style={{color:'black',fontWeight:'bold'}}>{item.submenu_title}</Text>
@@ -33,7 +36,7 @@ const navigation=useNavigation()
         myHeaders.append("Cookie", "PHPSESSID=9b1715a580a878faa4358a2d114d5a6f");
         
         let raw = JSON.stringify({
-          "menu_id": 1
+          "menu_id": id
         });
         
         let requestOptions = {
@@ -68,7 +71,7 @@ const navigation=useNavigation()
     <HeaderComponent title="Sub Categories" />
     <ActivityStatus message='' loading={loading}/>
     <View style={styles.container}>
-      <FlatList
+    <FlatList
       data={subCategoriesList || []}
       renderItem={Item}
       keyExtractor={item =>item.submenu_id}
