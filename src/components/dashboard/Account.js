@@ -81,7 +81,7 @@ const requestOptions = {
     console.log(res.token)
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${res.token}`);
-    myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
+    // myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
     
     var requestOptions = {
       method: 'GET',

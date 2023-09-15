@@ -38,7 +38,7 @@ const ForgetPassword = () => {
 const forgetPassword =async ()=>{
   var myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Cookie", "PHPSESSID=9f2645f941c1180cddd1bde18ac7f7ad");
+// myHeaders.append("Cookie", "PHPSESSID=9f2645f941c1180cddd1bde18ac7f7ad");
 
 var raw = JSON.stringify({
   "email": `${email}`

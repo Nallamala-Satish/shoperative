@@ -87,7 +87,7 @@ const UpdateProfile =async ()=>{
   console.log(res.token)
   var myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${res.token}`);
-myHeaders.append("Cookie", "PHPSESSID=9f2645f941c1180cddd1bde18ac7f7ad");
+// myHeaders.append("Cookie", "PHPSESSID=9f2645f941c1180cddd1bde18ac7f7ad");
 
 var raw = JSON.stringify({
   "username": `${name}`,

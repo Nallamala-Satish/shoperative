@@ -33,7 +33,7 @@ const navigation=useNavigation()
         setLoading(true)
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        myHeaders.append("Cookie", "PHPSESSID=9b1715a580a878faa4358a2d114d5a6f");
+        // myHeaders.append("Cookie", "PHPSESSID=9b1715a580a878faa4358a2d114d5a6f");
         
         let raw = JSON.stringify({
           "menu_id": id

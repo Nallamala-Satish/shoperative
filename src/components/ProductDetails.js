@@ -26,7 +26,7 @@ const ProductDetails = () => {
   const getProductDetails = async()=>{
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Cookie", "PHPSESSID=66789b11cc272b5691293c9e1e2cba4a");
+    // myHeaders.append("Cookie", "PHPSESSID=66789b11cc272b5691293c9e1e2cba4a");
 
 let raw = JSON.stringify({
   "product_id": productId

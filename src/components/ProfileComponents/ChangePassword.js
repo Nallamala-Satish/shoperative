@@ -71,7 +71,7 @@ const chnagesPassword = async()=>{
   console.log(res.token)
   var myHeaders = new Headers();
   myHeaders.append("Authorization", `Bearer ${res.token}`);
-  myHeaders.append("Cookie", "PHPSESSID=19d230166f3d837e8d178badfc036aab");
+  // myHeaders.append("Cookie", "PHPSESSID=19d230166f3d837e8d178badfc036aab");
 
 var raw = JSON.stringify({
   "password": `${newPassword}`,

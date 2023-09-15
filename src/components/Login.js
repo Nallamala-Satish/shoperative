@@ -91,7 +91,7 @@ const Login = () => {
     setLoading(true)
     const myHeaders = new Headers();
      myHeaders.append("Content-Type", "application/json");
-     myHeaders.append("Cookie", "PHPSESSID=a0aa86b9e40829e64a1303fad8a5964c");
+    //  myHeaders.append("Cookie", "PHPSESSID=a0aa86b9e40829e64a1303fad8a5964c");
 
     let raw = JSON.stringify({
       "loginusername": `${username}`,

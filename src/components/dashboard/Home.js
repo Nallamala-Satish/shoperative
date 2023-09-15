@@ -77,7 +77,7 @@ const [categoriesData,setCategoryData]=useState([])
 
   const getCategories = async ()=>{
     var myHeaders = new Headers();
-    myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
+    // myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
     
     var requestOptions = {
       method: 'GET',

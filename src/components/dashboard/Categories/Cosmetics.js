@@ -26,7 +26,7 @@ const getProducts = async ()=>{
   setLoading(true)
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Cookie", "PHPSESSID=5b8d0a77d015b0da55ede1ea2031b5bd");
+  // myHeaders.append("Cookie", "PHPSESSID=5b8d0a77d015b0da55ede1ea2031b5bd");
   
   let raw = JSON.stringify({
     "menu_id": id,
@@ -59,18 +59,18 @@ const getProducts = async ()=>{
 const Item =({item})=>{
   console.log(item.id)
   return(
-      <View style={{margin:10,}}>
-        <Card style={{padding:10,backgroundColor:'white', elevation: 10,}}>
+      <View style={{margin:5,}}>
+        <Card style={{padding:5,backgroundColor:'white', elevation: 10,}}>
               {
                item.id ==  itemId && like == true ?
                  (
                  <TouchableOpacity onPress={()=>{setItemId(item.id), setLike(!like)}}>
-                 <Ionicons name="heart-circle-outline" size={30} style={{ alignSelf: 'flex-end',padding:10,color:'red'}}/>
+                 <Ionicons name="heart-circle-outline" size={15} style={{ alignSelf: 'flex-end',padding:5,color:'red'}}/>
                  </TouchableOpacity>
                  ) :
                  ( 
                   <TouchableOpacity onPress={()=>{setItemId(item.id),setLike(!like)}}>
-                  <Ionicons name="heart-outline" size={30} style={{ alignSelf: 'flex-end',padding:10,color:'red'}}/>
+                  <Ionicons name="heart-outline" size={15} style={{ alignSelf: 'flex-end',padding:5,color:'red'}}/>
                   </TouchableOpacity>
                  ) 
               }
@@ -78,22 +78,22 @@ const Item =({item})=>{
                  navigation.navigate('ProductDetails',{productId:item.id})
              }} >
                  <Image source={{uri:item.prod_image}} style={styles.imageStyles}  />
-              <Text style={{color:'black',fontWeight:'bold',fontSize:20,padding:10}}>{item.prod_name}</Text>
-              <Text style={{color:'lightgray',padding:5}}>{item.prod_desc}</Text>
-              <Text style={{color:'black',fontWeight:'bold',color:'red',fontSize:20}}> Rs.{item.selling_price}  <Text style={{fontSize:15}}>({item.unit_of_measure})</Text></Text>
+              <Text style={{color:'black',fontWeight:'bold',fontSize:15,padding:5}}>{item.prod_name}</Text>
+              <Text style={{color:'lightgray',padding:5,fontSize:10}}>{item.prod_desc}</Text>
+              <Text style={{color:'black',fontWeight:'bold',color:'red',fontSize:15}}> Rs.{item.selling_price}  <Text style={{fontSize:10}}>({item.unit_of_measure})</Text></Text>
           </TouchableOpacity>
-          <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:10,}}>
-            <TouchableOpacity style={{backgroundColor:'darkorange',borderRadius:5,padding:10,}}>
+          <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:5,}}>
+            <TouchableOpacity style={{backgroundColor:'darkorange',borderRadius:5,padding:5,}}>
               <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-              <Text style={{color:'white',alignSelf:'center',fontWeight:'bold'}}>Share Cart   </Text>
-              <MaterialIcons name="add-shopping-cart" size={30} style={{color:'white'}}/>
+              <Text style={{color:'white',alignSelf:'center',fontSize:10}}>Share Cart   </Text>
+              <MaterialIcons name="add-shopping-cart" size={15} style={{color:'white'}}/>
               </View>
                 
             </TouchableOpacity>
-            <TouchableOpacity style={{backgroundColor:'lightgreen',padding:10,borderRadius:5}}>
+            <TouchableOpacity style={{backgroundColor:'lightgreen',padding:5,borderRadius:5}}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-              <Text style={{color:'white',alignSelf:'center',fontWeight:'bold'}}>basket  </Text>
-              <FontAwesome name="shopping-basket" size={30} style={{color:'white'}}/>
+              <Text style={{color:'white',alignSelf:'center',fontSize:10}}>basket  </Text>
+              <FontAwesome name="shopping-basket" size={15} style={{color:'white'}}/>
               </View>
           </TouchableOpacity>
           </View>
@@ -111,7 +111,7 @@ useEffect(()=>{
       <ActivityStatus message='' loading={loading}/>
       <View style={styles.container}>
       <ScrollView  showsVerticalScrollIndicator={false}>
-        <View style={styles.categoriesProducts}>
+        <View style={{flex:1}}>
           {/* <Pressable
             style={styles.productContainerStyles}
             onPress={() => navigation.navigate('ProductDetails')}>
@@ -155,7 +155,7 @@ useEffect(()=>{
             <Text style={styles.productPriceStyles}>₹ 539</Text>
           </Pressable> */}
            <FlatList
-          //  numColumns={2}
+             numColumns={2}
              data={products || []}
              renderItem={Item}
              keyExtractor={item =>item.id}
@@ -169,19 +169,21 @@ useEffect(()=>{
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: '#FFF',
     padding: 10,
+    height:'100%'
   },
   categoriesProducts: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    // flexDirection: 'row',
+    // flexWrap: 'wrap',
+    // justifyContent: 'space-between',
+    // width:200
   },
   imageStyles: {
-    width: 200,
-    height: 120,
-    borderRadius:1
+    width: 150,
+    height: 100,
+    borderRadius:5
   },
   productContainerStyles: {
     width: '48%',

@@ -25,7 +25,7 @@ const Register = () => {
 
   const getProfessionList = async ()=>{
     var myHeaders = new Headers();
-    myHeaders.append("Cookie", "PHPSESSID=048c825e662b1020adcd143cbd6d8c59");
+    // myHeaders.append("Cookie", "PHPSESSID=048c825e662b1020adcd143cbd6d8c59");
 
 var requestOptions = {
   method: 'GET',
@@ -96,7 +96,7 @@ console.log(income,profession)
     setLoading(true);
     var myHeaders = new Headers();
     myHeaders.append('Content-Type', 'application/json');
-    myHeaders.append('Cookie', 'PHPSESSID=a8a8c5f7431d8157032187054decf709');
+    // myHeaders.append('Cookie', 'PHPSESSID=a8a8c5f7431d8157032187054decf709');
 
     var raw = JSON.stringify({
       username: `${name}`,
