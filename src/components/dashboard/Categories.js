@@ -12,10 +12,12 @@ import {HeaderComponent} from '../CustomComponents/HeaderComponent';
 import cosmetics from '../../images/cosmetics.png';
 import {useNavigation} from '@react-navigation/native';
 import { baseURL } from '../../utils/Constants';
+import ActivityStatus from '../shared/ActivityStatus';
 
 const Categories = () => {
   const navigation = useNavigation();
   const [categoriesData,setCategoryData]=useState([])
+const [loading,setLoading]=useState(false)
 
   const Product = (imageSource, productName) => {
     return (
@@ -33,7 +35,7 @@ const Categories = () => {
   const Item =({item})=>{
     return(
       <View style={styles.productContainerStyles}>
-      <TouchableOpacity onPress={()=>{navigation.navigate('SubCategories')}}>
+      <TouchableOpacity onPress={()=>{navigation.navigate('SubCategories',{id:item.menu_id})}}>
       <Image source={{uri:`${item.image}`}} style={styles.imageContainerStyles} />
       <Text style={styles.productNameStyles}>{item.menu_title}</Text>
       </TouchableOpacity>
@@ -42,6 +44,7 @@ const Categories = () => {
 }
 
   const getCategories = async ()=>{
+    setLoading(true)
     var myHeaders = new Headers();
     // myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
     
@@ -57,9 +60,14 @@ const Categories = () => {
          console.log("categories res",result.categories)
          if(result.message == 'success'){
           setCategoryData(result.categories.categories)
+          setLoading(false)
          }
+         setLoading(false)
         })
-      .catch(error => console.log('error', error));
+      .catch(error =>{
+         console.log('error', error)
+         setLoading(false)
+        });
   }
 
   useEffect(()=>{
@@ -67,6 +75,7 @@ const Categories = () => {
   },[])
   return (
     <>
+     <ActivityStatus message='' loading={loading}/>
       <HeaderComponent title={'All Categories'} />
       <View style={styles.container}>
         {/* <View style={styles.rowDirectionView}>
@@ -132,7 +141,7 @@ const styles = StyleSheet.create({
   productContainerStyles: {
     alignItems: 'center',
     margin:10,
-    padding:10,
+    padding:5,
   },
   rowDirectionView: {
     width: '100%',

@@ -80,19 +80,24 @@ const requestOptions = {
     const res= await getUserProfileInfo()
     console.log(res.token)
     var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${res.token}`);
+    // myHeaders.append("Authorization", `Bearer ${res.token}`);
     // myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
     
+    let raw = JSON.stringify({
+      "userId": `${res.user_id}`
+    });
+  
     var requestOptions = {
-      method: 'GET',
+      method: 'POST',
       headers: myHeaders,
+      body: raw,
       redirect: 'follow'
     };
     console.log(myHeaders)
      await fetch(`${baseURL}/profile`, requestOptions)
       .then(response => response.json())
       .then(result =>{
-         console.log("profile res",result.user_details)
+         console.log("profile res1",result.user_details)
          if(result.message == 'success'){
          setProfileRes(result.user_details)
          }

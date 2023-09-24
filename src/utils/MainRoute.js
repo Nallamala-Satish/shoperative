@@ -36,6 +36,7 @@ import { useSelector } from 'react-redux';
 import { Login } from '../components/Login';
 import ProductList from '../components/dashboard/Categories/ProductList';
 import SubCategories from '../components/dashboard/Categories/SubCategories';
+import AddAddress from '../components/ProfileComponents/AddAddress';
 
 const RootStack = createStackNavigator();
 const screens = [
@@ -201,6 +202,11 @@ const screens = [
     name: 'SubCategories',
     components: SubCategories,
     headerBackTitle: 'SubCategories',
+  },
+  {
+    name: 'AddAddress',
+    components: AddAddress,
+    headerBackTitle: 'AddAddress',
   },
 ];
 const MainRoute = () => {

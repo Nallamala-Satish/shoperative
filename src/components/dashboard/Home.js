@@ -22,11 +22,12 @@ import {
 } from '../../utils/Constants';
 import BeautyImage from '../../images/DashBoardImages/beauty-hygiene.png';
 import {NavigationBar} from '../CustomComponents/NavigationBar';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 const Home = () => {
 const navigation=useNavigation()
 const [categoriesData,setCategoryData]=useState([])
+const isFocused=useIsFocused()
 
   useEffect(() => {
     const handleBackButton = () => {
@@ -85,7 +86,7 @@ const [categoriesData,setCategoryData]=useState([])
       redirect: 'follow'
     };
     
-    fetch(`${baseURL}/categories`, requestOptions)
+   await fetch(`${baseURL}/categories`, requestOptions)
       .then(response => response.json())
       .then(result =>{
         //  console.log("categories res",result.categories)
@@ -98,7 +99,7 @@ const [categoriesData,setCategoryData]=useState([])
 
   useEffect(()=>{
     getCategories()
-  },[])
+  },[isFocused])
 
   return (
     <View style={ss.container}>

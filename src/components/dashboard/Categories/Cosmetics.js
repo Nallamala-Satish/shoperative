@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, ScrollView,TouchableOpacity,FlatList} fro
 import {HeaderComponent} from '../../CustomComponents/HeaderComponent';
 import cosmeticsImage from '../../../images/cosmetics.png';
 import {Pressable} from '@react-native-material/core';
-import {useNavigation,useRoute} from '@react-navigation/native';
+import {useIsFocused, useNavigation,useRoute} from '@react-navigation/native';
 import { baseURL } from '../../../utils/Constants';
 import ActivityStatus from '../../shared/ActivityStatus';
 import {Card} from 'react-native-paper'
@@ -14,13 +14,14 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const Cosmetics = () => {
   const navigation = useNavigation();
    const route=useRoute()
+   const isFocused=useIsFocused()
    const{id,subId}=route.params
    const [products,setProducts]=useState([])
 const[loading,setLoading]=useState(false)
 const[like,setLike]=useState(false)
-const[itemId,setItemId]=useState()
+const[itemId,setItemId]=useState('')
 
-console.log(itemId)
+console.log('item id',itemId)
 
 const getProducts = async ()=>{
   setLoading(true)
@@ -78,8 +79,15 @@ const Item =({item})=>{
                  navigation.navigate('ProductDetails',{productId:item.id})
              }} >
                  <Image source={{uri:item.prod_image}} style={styles.imageStyles}  />
-              <Text style={{color:'black',fontWeight:'bold',fontSize:15,padding:5}}>{item.prod_name}</Text>
-              <Text style={{color:'lightgray',padding:5,fontSize:10}}>{item.prod_desc}</Text>
+              <Text style={{color:'black',fontWeight:'bold',fontSize:15,padding:5,width:150}}>{item.prod_name}</Text>
+              <Text style={{padding:5,fontSize:10,width:150,alignSelf:'center'}}>
+              <Text style={{alignSelf:'center'}}>
+              {item.prod_desc.length < 50
+                ? `${item.prod_desc}`
+                : `${item.prod_desc.substring(0, 60)}  ...`}
+            </Text>
+                {/* {item.prod_desc} */}
+                </Text>
               <Text style={{color:'black',fontWeight:'bold',color:'red',fontSize:15}}> Rs.{item.selling_price}  <Text style={{fontSize:10}}>({item.unit_of_measure})</Text></Text>
           </TouchableOpacity>
           <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:5,}}>
@@ -104,14 +112,16 @@ const Item =({item})=>{
 
 useEffect(()=>{
   getProducts()
-},[])
+},[isFocused])
+
   return (
     <>
+     <ActivityStatus message='' loading={loading}/>
       <HeaderComponent title="Products" />
-      <ActivityStatus message='' loading={loading}/>
+     
       <View style={styles.container}>
-      <ScrollView  showsVerticalScrollIndicator={false}>
-        <View style={{flex:1}}>
+      {/* <ScrollView  showsVerticalScrollIndicator={false}> */}
+        <View style={{flex:1,marginBottom:50}}>
           {/* <Pressable
             style={styles.productContainerStyles}
             onPress={() => navigation.navigate('ProductDetails')}>
@@ -161,7 +171,7 @@ useEffect(()=>{
              keyExtractor={item =>item.id}
            />  
         </View>
-        </ScrollView>
+        {/* </ScrollView> */}
       </View>
     </>
   );

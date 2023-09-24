@@ -3,12 +3,13 @@ import { View, Text,StyleSheet,FlatList,TouchableOpacity } from 'react-native';
 import { HeaderComponent } from '../../CustomComponents/HeaderComponent';
 import { baseURL } from '../../../utils/Constants';
 import ActivityStatus from '../../shared/ActivityStatus';
-import { useNavigation ,useRoute} from '@react-navigation/native';
+import { useIsFocused, useNavigation ,useRoute} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const SubCategories = () => {
   const route=useRoute()
   const {id}=route.params;
+  const isFocused=useIsFocused()
   console.log(id)
 const [loading,setLoading]=useState(false)
 const[subCategoriesList,setSubcategoriesList]=useState([])
@@ -64,12 +65,12 @@ const navigation=useNavigation()
 
     useEffect(()=>{
        getSubcategories()
-    },[])
+    },[isFocused])
 
   return (
     <>
+      <ActivityStatus message='' loading={loading}/>
     <HeaderComponent title="Sub Categories" />
-    <ActivityStatus message='' loading={loading}/>
     <View style={styles.container}>
     <FlatList
       data={subCategoriesList || []}

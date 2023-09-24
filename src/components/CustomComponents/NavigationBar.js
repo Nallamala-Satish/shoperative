@@ -5,7 +5,7 @@ import logo from '../../images/logo.png';
 import user from '../../images/user.png';
 import cart from '../../images/cart.png';
 import {bgColor} from '../../theme/colors';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import { baseURL } from '../../utils/Constants';
 import { getUserProfileInfo, saveAccountInfo } from '../../utils/AsyncStorageHelper';
 import ActivityStatus from '../shared/ActivityStatus';
@@ -14,22 +14,27 @@ const NavigationBar = props => {
   const navigation = useNavigation();
   const[profileRes,setProfileRes]=useState('')
   const[loading,setLoading]=useState(false)
+  const isFocused=useIsFocused()
   const {
     userPress = () => Alert.alert('Under Development'),
     cartPress = () => Alert.alert('Under Development'),
   } = props;
 
   const getProfile = async ()=>{
-    setLoading(true)
+    // setLoading(true)
   const res= await getUserProfileInfo()
   console.log(res.token)
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", `Bearer ${res.token}`);
+  // myHeaders.append("Authorization", `Bearer ${res.token}`);
   // myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
-  
+  let raw = JSON.stringify({
+    "userId": `${res.user_id}`
+  });
+
   var requestOptions = {
-    method: 'GET',
+    method: 'POST',
     headers: myHeaders,
+    body: raw,
     redirect: 'follow'
   };
   console.log(myHeaders)
@@ -51,7 +56,7 @@ const NavigationBar = props => {
 
 useEffect(()=>{
 getProfile()
-},[])
+},[isFocused])
 
   return (
     <View style={ss.container}>
