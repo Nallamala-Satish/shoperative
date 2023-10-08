@@ -17,7 +17,7 @@ const Splash = ({navigation}) => {
 
     console.log('userobject',userObject);
     setTimeout(() => {
-        if (userObject && userObject.user_id != null ) {
+        if (userObject && userObject.token != null ) {
             navigation.navigate("MainRoute")
         }           
         else {

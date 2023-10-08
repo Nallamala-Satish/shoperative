@@ -13,6 +13,7 @@ import cosmetics from '../../images/cosmetics.png';
 import {useNavigation} from '@react-navigation/native';
 import { baseURL } from '../../utils/Constants';
 import ActivityStatus from '../shared/ActivityStatus';
+import { getUserProfileInfo } from '../../utils/AsyncStorageHelper';
 
 const Categories = () => {
   const navigation = useNavigation();
@@ -45,7 +46,9 @@ const [loading,setLoading]=useState(false)
 
   const getCategories = async ()=>{
     setLoading(true)
+    const res= await getUserProfileInfo()
     var myHeaders = new Headers();
+    myHeaders.append("Authorization",`${res.token}`);
     // myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
     
     var requestOptions = {

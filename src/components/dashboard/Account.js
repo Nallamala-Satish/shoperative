@@ -127,9 +127,9 @@ const requestOptions = {
         contentContainerStyle={{alignItems: 'center'}}
         style={styles.cardContainer}>
         <Text style={styles.profileNameTextStyles}>
-          {profileResult.user_name}
+          {profileResult.user_name != null ? profileResult.user_name :'' }
         </Text>
-        <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text>
+        {/* <Text style={styles.numberTextStyles}>+91-{profileResult.mobile}</Text> */}
 
         {/* <CustomFeilds iconName={'user'}
          title={'My Profile'}
@@ -146,7 +146,11 @@ const requestOptions = {
         </View>
         <Ionicons name="chevron-forward" size={20} />
         </TouchableOpacity> 
-
+        <CustomFeilds
+          iconName={'user-plus'}
+          title={'My Followers'}
+          onPressButton={'MyFollowers'}
+        />
         <CustomFeilds
           iconName={'shopping-bag'}
           title={'My Orders'}

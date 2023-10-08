@@ -112,7 +112,7 @@ const Login = () => {
          let loginResult =result;
          console.log("login res",loginResult )
           if (loginResult.message === 'success') {
-            const userInfo =loginResult.user_details
+            const userInfo =loginResult
              saveUserProfileInfo(userInfo);
              dispatch(setuser(userInfo))
           navigation.navigate('MainRoute');

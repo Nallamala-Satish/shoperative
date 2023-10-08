@@ -16,7 +16,7 @@ const App = () => {
       let account = await getUserProfileInfo()
       console.log("Acount", account);
       if (account) {
-        console.log("account ID", account.user_id);
+        console.log("account ID", account.token);
         dispatch(setuser(account))
       }
     }

@@ -23,6 +23,7 @@ import {
 import BeautyImage from '../../images/DashBoardImages/beauty-hygiene.png';
 import {NavigationBar} from '../CustomComponents/NavigationBar';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { getUserProfileInfo } from '../../utils/AsyncStorageHelper';
 
 const Home = () => {
 const navigation=useNavigation()
@@ -77,7 +78,9 @@ const isFocused=useIsFocused()
   };
 
   const getCategories = async ()=>{
+    const res= await getUserProfileInfo()
     var myHeaders = new Headers();
+    myHeaders.append("Authorization",`${res.token}`);
     // myHeaders.append("Cookie", "PHPSESSID=1c5ef6b2fac2495295aedeb8dbf3c5bc");
     
     var requestOptions = {
@@ -89,7 +92,7 @@ const isFocused=useIsFocused()
    await fetch(`${baseURL}/categories`, requestOptions)
       .then(response => response.json())
       .then(result =>{
-        //  console.log("categories res",result.categories)
+         console.log("categories res",result.categories)
          if(result.message == 'success'){
           setCategoryData(result.categories.categories)
          }

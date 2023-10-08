@@ -37,6 +37,8 @@ import { Login } from '../components/Login';
 import ProductList from '../components/dashboard/Categories/ProductList';
 import SubCategories from '../components/dashboard/Categories/SubCategories';
 import AddAddress from '../components/ProfileComponents/AddAddress';
+import { MyFollowers } from '../components/ProfileComponents/MyFollowers';
+import { AddFollower } from '../components/ProfileComponents/AddFollower';
 
 const RootStack = createStackNavigator();
 const screens = [
@@ -207,6 +209,16 @@ const screens = [
     name: 'AddAddress',
     components: AddAddress,
     headerBackTitle: 'AddAddress',
+  },
+  {
+    name: 'MyFollowers',
+    components: MyFollowers,
+    headerBackTitle: 'MyFollowers',
+  },
+  {
+    name: 'AddFollower',
+    components: AddFollower,
+    headerBackTitle: 'AddFollower',
   },
 ];
 const MainRoute = () => {

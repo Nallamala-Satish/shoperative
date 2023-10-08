@@ -5,6 +5,7 @@ import { baseURL } from '../../../utils/Constants';
 import ActivityStatus from '../../shared/ActivityStatus';
 import { useIsFocused, useNavigation ,useRoute} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { getUserProfileInfo } from '../../../utils/AsyncStorageHelper';
 
 const SubCategories = () => {
   const route=useRoute()
@@ -32,7 +33,9 @@ const navigation=useNavigation()
 
     const getSubcategories = async ()=>{
         setLoading(true)
-        let myHeaders = new Headers();
+        const res= await getUserProfileInfo()
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization",`${res.token}`);
         myHeaders.append("Content-Type", "application/json");
         // myHeaders.append("Cookie", "PHPSESSID=9b1715a580a878faa4358a2d114d5a6f");
         

@@ -10,6 +10,7 @@ import {Card} from 'react-native-paper'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { getUserProfileInfo } from '../../../utils/AsyncStorageHelper';
 
 const Cosmetics = () => {
   const navigation = useNavigation();
@@ -25,7 +26,9 @@ console.log('item id',itemId)
 
 const getProducts = async ()=>{
   setLoading(true)
-  let myHeaders = new Headers();
+  const res= await getUserProfileInfo()
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization",`${res.token}`);
   myHeaders.append("Content-Type", "application/json");
   // myHeaders.append("Cookie", "PHPSESSID=5b8d0a77d015b0da55ede1ea2031b5bd");
   
