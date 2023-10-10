@@ -12,6 +12,7 @@ import ActivityStatus from './shared/ActivityStatus';
 import {Card} from 'react-native-paper'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { getUserProfileInfo } from '../utils/AsyncStorageHelper';
 
 
 const ProductDetails = () => {
@@ -22,10 +23,12 @@ const ProductDetails = () => {
   const[loading,setLoading]=useState(false)
   const [productRes,setProductRes]=useState({})
   const[like,setLike]=useState(false)
-  console.log('product response',productRes.price)
+  console.log('product response',productRes)
 
   const getProductDetails = async()=>{
+    const res= await getUserProfileInfo()
     let myHeaders = new Headers();
+    myHeaders.append("Authorization",`${res.token}`);
     myHeaders.append("Content-Type", "application/json");
     // myHeaders.append("Cookie", "PHPSESSID=66789b11cc272b5691293c9e1e2cba4a");
 
