@@ -107,7 +107,7 @@ const tableHeaders = [
          rowData.push(`${follower.mobile ? follower.mobile :''}`)
       }
       if (j == 4) {
-        rowData.push(`${follower.city ? follower.city :''}`)
+        rowData.push(`${follower.followerCity ? follower.followerCity :''}`)
       }
       if (j == 5) {
         rowData.push(rowData.push(Edit(index, follower))

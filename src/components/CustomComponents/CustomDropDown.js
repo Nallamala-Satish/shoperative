@@ -57,7 +57,7 @@ const DropdownExample = ({
               <Text style={styles.contentTextStyles}>{item.label}</Text>
             </TouchableOpacity>
           )}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item.id}
         />
       )}
     </View>

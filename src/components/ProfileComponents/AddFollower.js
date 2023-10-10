@@ -17,7 +17,7 @@ const AddFollower = () => {
     const [name, setName] = useState(item && item.followerName ? item.followerName : '');
     const [mobileNumber, setMobileNumber] = useState(item && item.mobile ? item.mobile : '');
     const [email, setEmail] = useState(item && item.emailId ? item.emailId : '');
-    const[city,setCity]=useState(item && item.city ? item.city : '')
+    const[city,setCity]=useState(item && item.followerCity ? item.followerCity : '')
     const [err, setErr] = useState('');
     const [visible, setVisible] = useState(false);
 
@@ -116,10 +116,10 @@ await fetch(`${baseURL}/addFollower`, requestOptions)
     const res= await getUserProfileInfo()
     var myHeaders = new Headers();
     myHeaders.append("Authorization",`${res.token}`);
-  myHeaders.append("Content-Type", "application/json");
+  // myHeaders.append("Content-Type", "application/json");
   
   var raw = JSON.stringify({
-    "followerId":`${item.followerId}`,
+    "followerId":parseInt(item.followerId),
     "name":`${name}`,
     "mobile":`${mobileNumber}`,
     // "email":`${email}`,
@@ -127,16 +127,16 @@ await fetch(`${baseURL}/addFollower`, requestOptions)
 });
   console.log('payload',raw)
   var requestOptions = {
-  method: 'PUT',
+  method: 'POST',
   headers: myHeaders,
   body: raw,
   redirect: 'follow'
   };
   
   await fetch(`${baseURL}/updateFollower`, requestOptions)
-  .then(response => response.text())
+  .then(response => response.json())
   .then(result =>{
-    console.log(result)
+    console.log(result.message)
     if(result.message == 'success'){
         console.log('follower res',result)
         getFollowersList()
