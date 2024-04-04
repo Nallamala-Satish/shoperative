@@ -38,7 +38,7 @@ const AddAddress = props => {
   const [pincode, setPincode] = useState(
     item && item.pincode ? item.pincode : '',
   );
-  console.log(item);
+  console.log(item.state);
 
   const handleTitleFeild = data => {
     setTitle(data);
@@ -53,6 +53,7 @@ const AddAddress = props => {
     setAddress(data);
   };
   const handleStateFeild = data => {
+    console.log('state',data)
     setState(data);
   };
   const handleCityFeild = data => {
@@ -246,6 +247,7 @@ const AddAddress = props => {
               data={data}
               selectedValue={state}
               setDropdownValue={handleStateFeild}
+            
             />
             <Text style={styles.textStyles}>
               City <Text style={{color: 'red'}}>*</Text>

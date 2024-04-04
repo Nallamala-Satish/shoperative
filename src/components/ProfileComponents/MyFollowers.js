@@ -95,7 +95,7 @@ const tableHeaders = [
     const rowData = [];
     for (let j = 0; j <= 8; j += 1) {
       if (j == 0) {
-        rowData.push(`${j+1}`)
+        rowData.push(`${index+1}`)
       }
       if (j == 1) {
            rowData.push(`${follower.followerName ? follower.followerName :''}`)

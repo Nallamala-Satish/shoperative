@@ -8,6 +8,8 @@ const DropdownExample = ({
   data,
   setDropdownValue,
   selectedValue,
+  item,
+  setItem
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dispatch = useDispatch();
@@ -20,12 +22,12 @@ const DropdownExample = ({
     setDropdownValue(optionValue);
     setIsDropdownOpen(false);
   };
-  const[item,setItem]=useState('')
+  // const[item,setItem]=useState('')
 
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.ButtonStyles} onPress={toggleDropdown}>
-        <Text style={styles.TextStyles}>{item || titleInput}</Text>
+        <Text style={styles.TextStyles}>{selectedValue || titleInput}</Text>
         <MaterialIcons
           name="keyboard-arrow-down"
           color={'#333'}
@@ -49,7 +51,8 @@ const DropdownExample = ({
           nestedScrollEnabled={true}
           renderItem={({item}) => (
             <TouchableOpacity
-              onPress={() => {selectOption(item.value),setItem(item.label)}}
+              // onPress={() => {selectOption(item.value),setItem(item.label)}}
+              onPress={() => {selectOption(item.label)}}
               style={{
                 borderTopColor: '#333',
                 borderTopWidth: 1,

@@ -131,25 +131,22 @@ const Item=({item})=>{
   },[])
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex:1}}>
         <ActivityStatus message='' loading={loading}/>
       <HeaderComponent title={'Address Book'} />
-      <View style={{marginBottom:200,}}>
+      <View style={{flex:1}}>
          <FlatList
             data={addressList || []}
             renderItem={Item}
             keyExtractor={item =>item.id}
          />
-     
-      <View style={{alignSelf:'center',width:'80%',}}>
+    </View>
+    <View style={{alignSelf:'center',width:'80%',bottom:10}}>
       <TouchableOpacity style={{padding:10,backgroundColor:'dodgerblue',borderRadius:5,}} 
       onPress={()=>{navigation.navigate('AddAddress',{getAddressList:getAddressList,status:0})}}>
         <Text style={{color:'white',fontWeight:'bold',fontSize:15,alignSelf:'center'}}> +ADD ADDRESS</Text>
       </TouchableOpacity>
       </View>
-      
-    </View>
-    
     </SafeAreaView>
    
   )

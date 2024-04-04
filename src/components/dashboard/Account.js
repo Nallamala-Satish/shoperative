@@ -17,11 +17,13 @@ import {useDispatch, useSelector} from 'react-redux';
 import { baseURL } from '../../utils/Constants';
 import { getUserProfileInfo, saveAccountInfo, saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
 import { logout } from '../../Redux/reducer/User';
+import { useIsFocused } from '@react-navigation/native';
 
 const Account = ({navigation}) => {
 const dispatch=useDispatch()
 const[profileResult,setProfileResult]=useState('')
 const[profileRes,setProfileRes]=useState('')
+const isFocused = useIsFocused()
 // console.log("profileRes",profileRes)
 
 const getUserData=async()=>{
@@ -33,7 +35,7 @@ const getUserData=async()=>{
 useEffect(()=>{
   getUserData()
   getProfile()
-},[])
+},[isFocused])
 
   // const {user_details: profileResult} = useSelector(state => state.profile);
   const CustomFeilds = ({iconName, title, onPressButton}) => {
