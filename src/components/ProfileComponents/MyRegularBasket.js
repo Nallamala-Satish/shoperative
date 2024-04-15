@@ -11,6 +11,7 @@ const MyRegularBasket = () => {
   const[basketlist,setBasketList]=useState([])
 
   const getBasketList = async ()=>{
+    setLoading(true)
     const userInfo= await getUserProfileInfo()
     //  console.log(userInfo.token)
      var myHeaders = new Headers();
@@ -43,11 +44,11 @@ useEffect(()=>{
 
 const Item = ({item}) => {
   return (
-    <Card onPress={()=>{
+    <Card onLongPress={()=>{
       // Alert.alert("Logout", "Are you want delete ?",
       // [
       //   { text: "Cancel", onPress: () => { } },
-      //   { text: "Ok", onPress: () =>  deleteBasketList(item.basketId) }
+      //   { text: "Ok", onPress: () =>  {deleteBasketList(item.basketId) }}
       // ])
     }}>
     <View style={styles.card}>

@@ -20,6 +20,7 @@ const AddressBook = () => {
 // console.log('addressList',addressList)
 
   const getAddressList=async()=>{
+    setLoading(true)
      const userInfo= await getUserProfileInfo()
     //  console.log(userInfo.token)
      var myHeaders = new Headers();

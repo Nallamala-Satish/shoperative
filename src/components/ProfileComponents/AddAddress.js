@@ -38,7 +38,7 @@ const AddAddress = props => {
   const [pincode, setPincode] = useState(
     item && item.pincode ? item.pincode : '',
   );
-  console.log(item.state);
+  console.log(item);
 
   const handleTitleFeild = data => {
     setTitle(data);

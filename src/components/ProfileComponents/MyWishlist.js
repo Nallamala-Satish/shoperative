@@ -29,6 +29,7 @@ const MyWishlist = () => {
 
 
  const getWishList = async ()=>{
+  setLoading(true)
     const userInfo= await getUserProfileInfo()
     //  console.log(userInfo.token)
      var myHeaders = new Headers();
@@ -56,6 +57,7 @@ await fetch(`${baseURL}/getWishlist`, requestOptions)
   }
 
   const deleteWishList=async(id)=>{
+    setLoading(true)
     const userInfo= await getUserProfileInfo()
     console.log(id)
     var myHeaders = new Headers();
@@ -92,11 +94,11 @@ await fetch(`${baseURL}/removeFromWishlist`, requestOptions)
   },[])
   const CustomCard = ({item}) => {
     return (
-      <Card onPress={()=>{
+      <Card onLongPress={()=>{
         Alert.alert("Logout", "Are you want delete ?",
         [
           { text: "Cancel", onPress: () => { } },
-          { text: "Ok", onPress: () =>  deleteWishList(item.productId) }
+          { text: "Ok", onPress: () =>  {deleteWishList(item.productId)} }
         ])
       }}>
       <View style={styles.card}>
