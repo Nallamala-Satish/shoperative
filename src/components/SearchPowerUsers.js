@@ -1,12 +1,12 @@
-import React,{useState} from 'react';
-import {View, TextInput, StyleSheet,TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {View, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
 import {HeaderComponent} from './CustomComponents/HeaderComponent';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { baseURL } from '../utils/Constants';
-import ActivityStatus from './shared/ActivityStatus';
 import { getUserProfileInfo } from '../utils/AsyncStorageHelper';
+import ActivityStatus from './shared/ActivityStatus';
+import { baseURL } from '../utils/Constants';
 
-const SearchFollowers = () => {
+const SearchPowerUsers = () => {
   const [loading,setLoading] = useState(false)
   const [search,setSearch]=useState('')
   const [searchRes, setSearchRes] = useState('');
@@ -27,8 +27,8 @@ const SearchFollowers = () => {
       body: raw,
       redirect: 'follow',
     };
-     console.log(raw)
-    await fetch(`${baseURL}/searchFollower`, requestOptions)
+
+    await fetch(`${baseURL}/searchPowerUser`, requestOptions)
       .then(response => response.text())
       .then(result => {
         console.log('power user res',result)
@@ -44,11 +44,10 @@ const SearchFollowers = () => {
       });
   };
 
-  
   return (
     <View style={styles.container}>
-       <ActivityStatus message='' loading={loading}/>
-      <HeaderComponent title={'Search Followers'} />
+      <ActivityStatus message='' loading={loading}/>
+      <HeaderComponent title={'Search Power Users'} />
       <View style={styles.searchContainerStyles}>
         <TextInput
           placeholder="Search by name/mobile/city"
@@ -62,13 +61,12 @@ const SearchFollowers = () => {
           onPress={() => {
             getSearchDetails();
           }}>
-        <FontAwesome name="search" size={22} style={{fontWeight: '800'}} />
+          <FontAwesome name="search" size={22} style={{fontWeight: '800'}} />
         </TouchableOpacity>
       </View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -92,5 +90,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
-export {SearchFollowers};
+export default SearchPowerUsers;

@@ -18,9 +18,11 @@ import { baseURL } from '../../utils/Constants';
 import { getUserProfileInfo, saveAccountInfo, saveUserProfileInfo } from '../../utils/AsyncStorageHelper';
 import { logout } from '../../Redux/reducer/User';
 import { useIsFocused } from '@react-navigation/native';
+import ActivityStatus from '../shared/ActivityStatus';
 
 const Account = ({navigation}) => {
 const dispatch=useDispatch()
+const [loading,setLoading]=useState(false)
 const[profileResult,setProfileResult]=useState('')
 const[profileRes,setProfileRes]=useState('')
 const isFocused = useIsFocused()
@@ -53,8 +55,9 @@ useEffect(()=>{
   };
 
   const Logout = async()=>{
+    const res= await getUserProfileInfo()
     const myHeaders = new Headers();
-myHeaders.append("Authorization", "Bearer b93aadc7b193fb83b5c42df157c90576f4f98297057306953668b7bdf6a5bc8f.VXZbSgHS+XVi/GGf9NIlTQ==");
+    myHeaders.append("Authorization", ` ${res.token}`);
 myHeaders.append("Cookie", "PHPSESSID=32d91d6fb8c201761f779fb2ff6bafc0");
 
 const raw = "";
@@ -78,7 +81,7 @@ const requestOptions = {
   }
 
   const getProfile = async ()=>{
-  
+    setLoading(true)
     const res= await getUserProfileInfo()
     console.log(res.token)
     var myHeaders = new Headers();
@@ -86,7 +89,7 @@ const requestOptions = {
     // myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
     
     let raw = JSON.stringify({
-      "userId": `${res.user_id}`
+      "userId": `${res.userId}`
     });
   
     var requestOptions = {
@@ -102,14 +105,18 @@ const requestOptions = {
          console.log("profile res1",result.user_details)
          if(result.message == 'success'){
          setProfileRes(result.user_details)
+         setLoading(false)
          }
+         setLoading(false)
         })
       .catch(error => {
         console.log('error', error)
+        setLoading(false)
       });
     }
   return (
     <View style={styles.container}>
+       <ActivityStatus message={''} loading={loading} />
       <View style={styles.topContainerStyles}>
         <Ionicons
           name="arrow-back"

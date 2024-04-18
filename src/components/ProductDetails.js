@@ -23,6 +23,7 @@ const ProductDetails = () => {
   const[loading,setLoading]=useState(false)
   const [productRes,setProductRes]=useState({})
   const[like,setLike]=useState(false)
+  const [itemId, setItemId] = useState('');
   console.log('product response',productRes)
 
   const getProductDetails = async()=>{
@@ -46,7 +47,7 @@ let requestOptions = {
 fetch(`${baseURL}/getProductDetails`, requestOptions)
   .then(response => response.json())
   .then(result => {
-    // console.log('product response',result)
+    console.log('product response',result)
     if(result.message == 'Products list'){
       setProductRes(result.products[0])
       setLoading(false)
@@ -58,6 +59,46 @@ fetch(`${baseURL}/getProductDetails`, requestOptions)
     setLoading(false)
   });
   }
+
+  const addWishlist = async () => {
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    const raw = JSON.stringify({
+      productId:productId,
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+    console.log(raw);
+    fetch(`${baseURL}/addToWishlist`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        console.log('addWhistlist res', result);
+        const res= JSON.parse(result)
+        const des = res.description 
+        if (res.message == 'success') {
+          setLike(!like);
+          alert(des);
+          setLoading(false);
+        } else {
+          alert(des);
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  };
 
   useEffect(()=>{
     getProductDetails()
@@ -78,7 +119,7 @@ fetch(`${baseURL}/getProductDetails`, requestOptions)
                  </TouchableOpacity>
                  ) :
                  ( 
-                  <TouchableOpacity onPress={()=>{setLike(!like)}}>
+                  <TouchableOpacity onPress={()=>{ addWishlist();}}>
                   <Ionicons name="heart-outline" size={25} style={{ alignSelf: 'flex-end',padding:5,color:'red'}}/>
                   </TouchableOpacity>
                  ) 

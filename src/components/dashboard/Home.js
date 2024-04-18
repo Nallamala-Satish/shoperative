@@ -89,12 +89,12 @@ const isFocused=useIsFocused()
       redirect: 'follow'
     };
     
-   await fetch(`${baseURL}/categories`, requestOptions)
+   await fetch(`${baseURL}/getCategories`, requestOptions)
       .then(response => response.json())
       .then(result =>{
-         console.log("categories res",result.categories)
+         console.log("categories res",result.data)
          if(result.message == 'success'){
-          setCategoryData(result.categories.categories)
+          setCategoryData(result.data)
          }
         })
       .catch(error => console.log('error', error));

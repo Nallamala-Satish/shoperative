@@ -28,7 +28,7 @@ const NavigationBar = props => {
   // myHeaders.append("Authorization", `Bearer ${res.token}`);
   // myHeaders.append("Cookie", "PHPSESSID=a2867b19b7ec335d5cebaf6064f2cff1");
   let raw = JSON.stringify({
-    "userId": `${res.user_id}`
+    "userId": `${res.userId}`
   });
 
   var requestOptions = {

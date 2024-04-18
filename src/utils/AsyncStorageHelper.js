@@ -37,3 +37,12 @@ export const getAccountInfo = async () => {
     const userAccountInfo = await AsyncStorage.getItem(ACCOUNT_DATA);
     return JSON.parse(userAccountInfo);
 }
+
+export const saveUserProfileData = async (userInfo) => {
+    await AsyncStorage.setItem(LOGIN_DATA, JSON.stringify(userInfo));
+}
+
+export const getUserProfileData = async () => {
+    const userProfileInfo = await AsyncStorage.getItem(LOGIN_DATA);
+    return JSON.parse(userProfileInfo);
+}

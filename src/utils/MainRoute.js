@@ -39,6 +39,7 @@ import SubCategories from '../components/dashboard/Categories/SubCategories';
 import AddAddress from '../components/ProfileComponents/AddAddress';
 import { MyFollowers } from '../components/ProfileComponents/MyFollowers';
 import { AddFollower } from '../components/ProfileComponents/AddFollower';
+import SearchPowerUsers from '../components/SearchPowerUsers';
 
 const RootStack = createStackNavigator();
 const screens = [
@@ -219,6 +220,11 @@ const screens = [
     name: 'AddFollower',
     components: AddFollower,
     headerBackTitle: 'AddFollower',
+  },
+  {
+    name: 'SearchPowerUsers',
+    components: SearchPowerUsers,
+    headerBackTitle: 'SearchPowerUsers',
   },
 ];
 const MainRoute = () => {

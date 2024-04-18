@@ -55,7 +55,7 @@ const Cosmetics = () => {
     fetch(`${baseURL}/getProducts`, requestOptions)
       .then(response => response.json())
       .then(result => {
-        console.log('products res', result);
+        // console.log('products res', result);
         if (result.message == 'Products list') {
           setProducts(result.products);
           setLoading(false);
@@ -86,16 +86,19 @@ const Cosmetics = () => {
       redirect: 'follow',
     };
     console.log(raw);
-    fetch(`${baseURL}/addToWishList`, requestOptions)
+    fetch(`${baseURL}/addToWishlist`, requestOptions)
       .then(response => response.text())
       .then(result => {
         console.log('addWhistlist res', result);
-        if (result.message == 'success') {
+        const res= JSON.parse(result)
+        const des = res.description 
+        if (res.message == 'success') {
           setItemId(id);
           setLike(!like);
+          alert(des);
           setLoading(false);
         } else {
-          alert('not added in wishlist');
+          alert(des);
           setLoading(false);
         }
         setLoading(false);
@@ -115,8 +118,8 @@ const Cosmetics = () => {
 
     const raw = JSON.stringify({
       productId: item.id,
-      cartType:2,
-      quantity:11
+      cartType: 2,
+      quantity: 11,
     });
 
     const requestOptions = {

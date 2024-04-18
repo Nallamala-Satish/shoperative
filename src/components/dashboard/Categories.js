@@ -57,12 +57,12 @@ const [loading,setLoading]=useState(false)
       redirect: 'follow'
     };
     
-    fetch(`${baseURL}/categories`, requestOptions)
+    fetch(`${baseURL}/getCategories`, requestOptions)
       .then(response => response.json())
       .then(result =>{
-         console.log("categories res",result.categories)
+         console.log("categories res",result.data)
          if(result.message == 'success'){
-          setCategoryData(result.categories.categories)
+          setCategoryData(result.data)
           setLoading(false)
          }
          setLoading(false)

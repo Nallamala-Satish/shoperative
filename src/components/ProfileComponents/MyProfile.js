@@ -21,8 +21,8 @@ const[loading,setLoading]=useState(false)
 const [name, setName] = useState(profileRes !== undefined ? profileRes.username :'');
 const [mobileNumber, setMobileNumber] = useState(profileRes !== undefined ? profileRes.mobile :'');
 const [email, setEmail] = useState(profileRes !== undefined ? profileRes.email :'');
-const[state,setState]=useState('')
-const[city,setCity]=useState('')
+const[state,setState]=useState(profileRes !== undefined ? profileRes.state :'')
+const[city,setCity]=useState(profileRes !== undefined ? profileRes.city :'')
 const[stateList,setStateList]=useState([])
 const [err, setErr] = useState('');
 const [visible, setVisible] = useState(false);
@@ -55,6 +55,8 @@ const snackBar = () => {
   );
 };
 
+const data = [{label: 'Telangana', id: 1},{label: 'Andhra Pradesh', id: 2}];
+
 const ProfileValidation = () => {
   if (name.length < 3) {
     setVisible(true);
@@ -86,19 +88,20 @@ const UpdateProfile =async ()=>{
   const res= await getUserProfileInfo()
   console.log(res.token)
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", `Bearer ${res.token}`);
+  myHeaders.append("Authorization", `${res.token}`);
 // myHeaders.append("Cookie", "PHPSESSID=9f2645f941c1180cddd1bde18ac7f7ad");
 
 var raw = JSON.stringify({
   "username": `${name}`,
   "address":'hyd',
   "city": `${city}`,
-  "state": "Telangana",
+  "state": `${state}`,
   "latitude":`${profileRes.latitude}`,
   "longitude":`${profileRes.longitude}`,
   "user_profession": `${profileRes.user_profession}`,
   "income": `${profileRes.income}`,
-  "fb_link": `${profileRes.fb_link}`
+  "fb_link": `${profileRes.fb_link}`,
+  "mobile": `${mobileNumber}`,
 });
 
 var requestOptions = {
@@ -172,7 +175,7 @@ await fetch(`${baseURL}/update-profile`, requestOptions)
 
         <DropdownExample
           titleInput={'-- Select State --'}
-          data={stateList}
+          data={data || []}
           selectedValue={state}
           setDropdownValue={setState}
         />

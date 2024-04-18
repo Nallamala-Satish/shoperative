@@ -70,7 +70,7 @@ const chnagesPassword = async()=>{
   const res= await getUserProfileInfo()
   console.log(res.token)
   var myHeaders = new Headers();
-  myHeaders.append("Authorization", `Bearer ${res.token}`);
+  myHeaders.append("Authorization", ` ${res.token}`);
   // myHeaders.append("Cookie", "PHPSESSID=19d230166f3d837e8d178badfc036aab");
 
 var raw = JSON.stringify({
@@ -90,8 +90,11 @@ await fetch(`${baseURL}/change-password`, requestOptions)
   .then(response => response.json())
   .then(result => {
     console.log('confirm passowrd',result)
-    alert(`${result.description}`)  
-    navigation.goBack();
+    Alert.alert("Logout", `${result.description}`,
+    [
+      { text: "Cancel", onPress: () => { } },
+      { text: "Ok", onPress: () => navigation.goBack() }
+    ]) 
   })
   .catch(error => console.log('error', error));
 }

@@ -95,7 +95,7 @@ await fetch(`${baseURL}/removeFromWishlist`, requestOptions)
   const CustomCard = ({item}) => {
     return (
       <Card onLongPress={()=>{
-        Alert.alert("Logout", "Are you want delete ?",
+        Alert.alert("Delete", "Are you want remove from Whishlist ?",
         [
           { text: "Cancel", onPress: () => { } },
           { text: "Ok", onPress: () =>  {deleteWishList(item.productId)} }

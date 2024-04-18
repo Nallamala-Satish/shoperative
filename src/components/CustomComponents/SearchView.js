@@ -11,9 +11,10 @@ import {
   Pressable,
   StyleSheet,
   Image,
-  Keyboard,
+  Keyboard,TouchableOpacity
 } from 'react-native';
 import SearchIcon from '../../images/search.png';
+import { useNavigation } from '@react-navigation/native';
 
 const SearchView = props => {
   const {
@@ -26,6 +27,7 @@ const SearchView = props => {
     onPress(searchText);
     Keyboard.dismiss();
   };
+  const navigation = useNavigation()
   return (
     <>
       <View style={ss.container}>
@@ -42,9 +44,15 @@ const SearchView = props => {
           </Pressable>
         </View>
         <View style={ss.searchLabelsContainer}>
-          <Text style={ss.textStyle}>Search By Category</Text>
+          <TouchableOpacity>
+             <Text style={ss.textStyle}>Search By Category</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{navigation.navigate('SearchFollowers')}}>
           <Text style={ss.textStyle}>Search Followers</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{navigation.navigate('SearchPowerUsers')}}>
           <Text style={ss.textStyle}>Search Power Users</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </>

@@ -16,7 +16,7 @@ export const profile = () => {
         url,
         headers: {
           'Content-Type': 'application/json; charset=utf-8',
-          Authorization: `Bearer ${loginResult.token}`,
+          Authorization: ` ${loginResult && loginResult.token}`,
         },
       });
       if (result.status === 200) {
