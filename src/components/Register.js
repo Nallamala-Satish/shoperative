@@ -65,6 +65,7 @@ var requestOptions = {
   },[])
   const navigation = useNavigation();
   const [name, setName] = useState('');
+  const [city, setCity] = useState('')
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, SetPassword] = useState('');
@@ -104,6 +105,7 @@ console.log(income,profession)
       email: `${email}`,
       password: `${password}`,
       confirm_password: `${confirmPassword}`,
+      city : `${city}`,
       profession: `${profession}`,
       monthly_income: `${income}`,
     });
@@ -115,7 +117,7 @@ console.log(income,profession)
       redirect: 'follow',
     };
       console.log(raw)
-   await fetch(`${baseURL}/signup`, requestOptions)
+   await fetch(`${baseURL}/signupForUser`, requestOptions)
       .then(response => response.json())
       .then(result => {
         console.log('register values', JSON.stringify(result));
@@ -144,15 +146,15 @@ console.log(income,profession)
   const handleConfirmPasswordFeild = data => {
     setConfirmPassword(data);
   };
+  const handleCityFeild = data => {
+    setCity(data);
+  };
 
   // Register Validation
   const RegisterValidation = () => {
     if (name.length < 3) {
       setVisible(true);
       setErr('Please Enter Name');
-    } else if (mobileNumber === '') {
-      setVisible(true);
-      setErr('Please Enter Mobile Number');
     } else if (mobileNumber.length < 10) {
       setVisible(true);
       setErr('Enter a 10-Digit Mobile Number');
@@ -174,6 +176,9 @@ console.log(income,profession)
     } else if (password !== confirmPassword) {
       setVisible(true);
       setErr('Confirm Password Not Matched');
+    }else if (city === '') {
+      setVisible(true);
+      setErr('Please Enter city');
     } else {
       Register();
     }
@@ -228,6 +233,13 @@ console.log(income,profession)
           placeholderTextColor={placeHolderTextColor}
           secureTextEntry={true}
           onChangeText={handleConfirmPasswordFeild}
+        />
+          <TextInput
+          style={styles.feildStles}
+          placeholder={'City'}
+          placeholderTextColor={placeHolderTextColor}
+          secureTextEntry={true}
+          onChangeText={handleCityFeild}
         />
 
         <DropdownExample
