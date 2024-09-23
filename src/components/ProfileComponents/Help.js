@@ -2,6 +2,9 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
 import {HeaderComponent} from '../CustomComponents/HeaderComponent';
 import {Snackbar} from 'react-native-paper';
+import { baseURL } from '../../utils/Constants';
+import { placeHolderTextColor } from '../../theme/colors';
+import { getUserProfileInfo } from '../../utils/AsyncStorageHelper';
 
 const Help = () => {
   const [subject, setSubject] = useState('');
@@ -39,10 +42,46 @@ const Help = () => {
       setVisible(true);
       setErr('Please Enter Message');
     } else {
-      setVisible(true);
-      setErr('Request Sent');
+      // setVisible(true);
+      // setErr('Request Sent');
+      RequestSent()
     }
   };
+
+  const RequestSent = async ()=>{
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    var raw = JSON.stringify({
+       "subject":`${subject}`,
+       "message":`${message}`
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+     console.log(raw)
+    await fetch(`${baseURL}/help`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        console.log('help res.', res);
+        if (res.message == 'success') {
+          alert(res.description)
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  }
 
   return (
     <>
@@ -52,11 +91,15 @@ const Help = () => {
           <Text style={styles.textFeildStyles}>Subject</Text>
           <TextInput
             style={styles.inputFeilds1}
+            placeholder={'Subject'}
+            placeholderTextColor={placeHolderTextColor}
             onChangeText={handleSubjectInput}
           />
           <Text style={styles.textFeildStyles}>Message</Text>
           <TextInput
             style={styles.inputFeilds2}
+            placeholder={'Message'}
+            placeholderTextColor={placeHolderTextColor}
             multiline={true}
             onChangeText={handleMessageInput}
           />

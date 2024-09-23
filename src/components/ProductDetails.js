@@ -100,6 +100,49 @@ fetch(`${baseURL}/getProductDetails`, requestOptions)
       });
   };
 
+  const addBasket = async item => {
+    console.log('.....',item)
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    const raw = JSON.stringify({
+      productId: parseInt(item.id),
+      cartType: 2,
+      quantity: 1
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+    console.log(raw);
+    fetch(`${baseURL}/addToBasket`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        console.log('addBasket res', result);
+        const res= JSON.parse(result)
+        if (res.message == 'success') {
+          // setItemId(id);
+          // setLike(!like);
+          setLoading(false);
+          alert('product added in Basket');
+        } else {
+          alert('not added in Basket');
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  };
+
   useEffect(()=>{
     getProductDetails()
   },[isFocused])
@@ -155,7 +198,10 @@ fetch(`${baseURL}/getProductDetails`, requestOptions)
               </View>
                 
             </TouchableOpacity>
-            <TouchableOpacity style={{backgroundColor:'lightgreen',padding:5,borderRadius:5}}>
+            <TouchableOpacity style={{backgroundColor:'lightgreen',padding:5,borderRadius:5}}
+            onPress={()=>{
+              addBasket(productRes)
+            }}>
             <View style={{flexDirection:'row',justifyContent:'space-between'}}>
               <Text style={{color:'white',alignSelf:'center',fontWeight:'bold'}}>basket  </Text>
               <FontAwesome name="shopping-basket" size={20} style={{color:'white'}}/>

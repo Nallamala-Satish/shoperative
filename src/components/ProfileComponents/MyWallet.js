@@ -1,11 +1,157 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React,{useState,useEffect} from 'react';
+import {View, Text, StyleSheet,ScrollView} from 'react-native';
 import {HeaderComponent} from '../CustomComponents/HeaderComponent';
 import {Pressable} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { baseURL } from '../../utils/Constants';
+import { AppTable } from '../CustomComponents/AppTable';
 
 const MyWallet = () => {
+  const data =[
+    {
+      "cart_id": "9",
+      "orderid": "1",
+      "ordernumber": "SHPRTV16132002546",
+      "orderdate": "2021-02-13 12:40:54",
+      "shippingCharges": "20",
+      "unitPrice": "20",
+      "totalAmount": "20",
+      "refundAmount": "40",
+      "productName": "ANTISEPTIC SOAP",
+      "cancelledOn": "2024-04-17 12:37:29",
+      "reason": "you cancelled order item."
+    },
+    {
+      "cart_id": "8",
+      "orderid": "1",
+      "ordernumber": "SHPRTV16132002546",
+      "orderdate": "2021-02-13 12:40:54",
+      "shippingCharges": "20",
+      "unitPrice": "210",
+      "totalAmount": "210",
+      "refundAmount": "230",
+      "productName": "ALMOND OIL VEG CAPSULE",
+      "cancelledOn": "2024-04-17 12:37:29",
+      "reason": "you cancelled order item."
+    },
+    {
+      "cart_id": "7",
+      "orderid": "1",
+      "ordernumber": "SHPRTV16132002546",
+      "orderdate": "2021-02-13 12:40:54",
+      "shippingCharges": "20",
+      "unitPrice": "42",
+      "totalAmount": "42",
+      "refundAmount": "62",
+      "productName": "ALMOND & HONEY SOAP",
+      "cancelledOn": "2024-04-17 12:37:29",
+      "reason": "you cancelled order item."
+    }
+  ]
+
+  const data1 =332
+
+  const [walletRes,setWalletRes] = useState([])
+  const[walletAmount,setWalletAmount] = useState('')
+
+  const getMyWallet = async ()=>{
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
+     console.log(raw)
+    await fetch(`${baseURL}/myWallet`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        console.log('wallet res.', res);
+        if (res.message == 'success') {
+          setWalletRes(res.data)
+          setWalletAmount(res.total_wallet_amt)
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  }
+
+  useEffect(()=>{
+    getMyWallet()
+  },[])
+
+  const tableHeaders = [
+    'S.No',
+    'Item Name',
+    'Order',
+    'Order Date',
+    'Cancelled On',
+    'Unit Price',
+    'Shipping Charges',
+    'Total Amount',
+    'Refund Amount',
+    'Reason'
+  ];
+  const widthArr = [
+   75,200,200,150,150,100,100,100,100,200
+  ];
+
+  let tableData = [];
+  for (let index = 0; index < data.length; index++) {
+    const wallet = data[index];
+    const rowData = [];
+    for (let j = 0; j <= 11; j += 1) {
+      if (j == 0) {
+        rowData.push(`${index+1}`)
+      }
+      if (j == 1) {
+           rowData.push(`${wallet.productName ? wallet.productName :''}`)
+      }
+      if (j == 2) {
+        rowData.push(`${wallet.ordernumber ? wallet.ordernumber :''}`)
+      }
+      if (j == 3) {
+         rowData.push(`${wallet.orderdate ? wallet.orderdate :''}`)
+      }
+      if (j == 4) {
+        rowData.push(`${wallet.cancelledOn ? wallet.cancelledOn :''}`)
+      }
+      if (j == 5) {
+        rowData.push(`${wallet.unitPrice ? wallet.unitPrice :''}`
+        )
+      }
+      if (j == 6) {
+        rowData.push(`${wallet.shippingCharges ? wallet.shippingCharges :''}`
+        )
+      }
+      if (j == 7) {
+        rowData.push(`${wallet.totalAmount ? wallet.totalAmount :''}`
+        )
+      }
+      if (j == 8) {
+        rowData.push(`${wallet.refundAmount ? wallet.refundAmount :''}`
+        )
+      }
+      if (j == 9) {
+        rowData.push(`${wallet.reason ? wallet.reason :''}`
+        )
+      }
+     
+    }
+    tableData.push(rowData);
+  }
+
+
   return (
     <View style={styles.container}>
       <HeaderComponent title={'My Wallet'} />
@@ -19,9 +165,9 @@ const MyWallet = () => {
           height: '80%',
         }}>
         <Text style={styles.headingTextStyles}>YOUR CASH BALANCE</Text>
-        <Text style={styles.balanceTextStyles}>₹ 400</Text>
+        <Text style={styles.balanceTextStyles}>₹ {data1}</Text>
 
-        <View>
+        {/* <View>
           <Text style={styles.referalStyles1}>Share Referral Code</Text>
           <Text style={styles.referalStyles2}>
             Earn ₹100 For Each Friend You Refer
@@ -79,7 +225,27 @@ const MyWallet = () => {
             Your friend gets $100 Cash on sign up.{'\n'}You get 100 when they
             complete an order{'\n'}of 3100 or more within 7 days.
           </Text>
-        </View>
+        </View> */}
+
+       <ScrollView>
+               <View
+                    style={{
+                      flexDirection: 'row',
+                      marginLeft: 5
+                    }}
+                  >
+                    <AppTable
+                      tableHeaders={tableHeaders}
+                      widthArr={widthArr}
+                      tableData={tableData }
+                      containerStyle={{
+                        padding:3,
+                        paddingVertical:5,
+                      }}
+                    />
+                  </View>
+
+      </ScrollView>
       </View>
     </View>
   );

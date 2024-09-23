@@ -117,9 +117,9 @@ const Cosmetics = () => {
     myHeaders.append('Authorization', `${userInfo.token}`);
 
     const raw = JSON.stringify({
-      productId: item.id,
+      productId: parseInt(item.id),
       cartType: 2,
-      quantity: 11,
+      quantity: 1
     });
 
     const requestOptions = {
@@ -132,13 +132,15 @@ const Cosmetics = () => {
     fetch(`${baseURL}/addToBasket`, requestOptions)
       .then(response => response.text())
       .then(result => {
-        console.log('addWhistlist res', result);
-        if (result.message == 'success') {
+        console.log('addBasket res', result);
+        const res= JSON.parse(result)
+        if (res.message == 'success') {
           setItemId(id);
           setLike(!like);
           setLoading(false);
+          alert('product added in Basket');
         } else {
-          alert('not added in wishlist');
+          alert('not added in Basket');
           setLoading(false);
         }
         setLoading(false);

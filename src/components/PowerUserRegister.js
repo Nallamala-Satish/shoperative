@@ -8,14 +8,20 @@ import {
   Pressable,
   ScrollView,
   Image,
+  FlatList,
+  Button,TouchableOpacity
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {placeHolderTextColor} from '../theme/colors';
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import {launchImageLibrary} from 'react-native-image-picker';
 import * as ImagePicker from 'react-native-image-picker';
 import {Snackbar} from 'react-native-paper';
 
 import DropdownExample from './CustomComponents/CustomDropDown';
+import { baseURL } from '../utils/Constants';
+import ActivityStatus from './shared/ActivityStatus';
 
 const ProfessionData = [
   {
@@ -46,6 +52,7 @@ const PowerUserRegister = () => {
   const navigation = useNavigation();
   const [resourcePath, SetResourcePath] = useState(null);
   const [filename, setFilename] = useState(null);
+  const[loading,setLoading]= useState(false)
 
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
@@ -78,6 +85,87 @@ const PowerUserRegister = () => {
         {err}
       </Snackbar>
     );
+  };
+
+  const [followers, setFollowers] = useState([{ name: '', email: '', mobile: '', city: '' }]);
+// console.log(followers)
+  // Function to add a new follower
+  const addFollower = () => {
+    setFollowers([...followers, { name: '', email: '', mobile: '', city: '' }]);
+  };
+
+  // Function to remove a follower
+  const removeFollower = (index) => {
+    let updatedFollowers = [...followers];
+    updatedFollowers.splice(index, 1);
+    setFollowers(updatedFollowers);
+  };
+
+  // Function to update follower info
+  const updateFollower = (index, field, value) => {
+    setFollowers(prevFollowers => {
+      const updatedFollowers = [...prevFollowers];
+      const updatedFollower = { ...updatedFollowers[index], [field]: value };
+      updatedFollowers[index] = updatedFollower;
+      return updatedFollowers;
+    });
+  };
+
+ 
+
+  const Register = async () => {
+    setLoading(true);
+    var myHeaders = new Headers();
+    // myHeaders.append('Content-Type', 'application/json');
+    // myHeaders.append('Cookie', 'PHPSESSID=a8a8c5f7431d8157032187054decf709');
+    const formdata = new FormData();
+    const raw = JSON.stringify({
+      username: `${name}`,
+      mobile: `${mobileNumber}`,
+      email: `${email}`,
+      password: `${password}`,
+      confirm_password: `${confirmPassword}`,
+      city : `${city}`,
+      state:`${state}`,
+      address:`${address}`,
+      profession: `${profession}`,
+      monthly_income: `${income}`,
+      fb_link:`${facebookLink}`,
+      followers:followers,
+    
+    });
+
+   formdata.append("jsonData",raw)
+   formdata.append("id_proof",{
+    uri:`${resourcePath}`,
+    type: 'image/jpeg',
+    name: 'id_proof.jpg',
+  })
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow"
+    };
+    
+      console.log(formdata)
+   await fetch(`${baseURL}/signupForPowerUser`, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        const res= (result)
+        console.log('register values3', res);
+       
+        if (res.message == 'success') {
+          navigation.navigate('Login');
+          setLoading(false);
+        }else{
+          alert(res.description)
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => console.log('error1', error));
+    setLoading(false);
   };
 
   // Handling Functions Of Feilds
@@ -131,10 +219,12 @@ const PowerUserRegister = () => {
     } else if (!emailRegex.test(email)) {
       setVisible(true);
       setErr('Enter a Valid Email');
-    } else if (area === '') {
-      setVisible(true);
-      setErr('Please Enter Area');
-    } else if (city === '') {
+    } 
+    // else if (area === '') {
+    //   setVisible(true);
+    //   setErr('Please Enter Area');
+    // } 
+    else if (city === '') {
       setVisible(true);
       setErr('Please Enter City');
     } else if (state === '') {
@@ -160,13 +250,15 @@ const PowerUserRegister = () => {
       setErr('Select idProof');
     } else {
       console.log(resourcePath);
-      setVisible(true);
-      setErr('Power User Register Successfull');
+      // setVisible(true);
+      // setErr('Power User Register Successfull');
+      Register();
     }
   };
 
   return (
     <View style={styles.container}>
+       <ActivityStatus message={'Registration inprogress'} loading={loading} />
       <Text style={styles.logoStyles}>Power User</Text>
       <Text style={styles.headingStyles}>Registration</Text>
       <ScrollView style={styles.card} showsVerticalScrollIndicator={false}>
@@ -197,12 +289,12 @@ const PowerUserRegister = () => {
         />
 
         {/* Area */}
-        <TextInput
+        {/* <TextInput
           style={styles.feildStles}
           placeholder={'Area'}
           placeholderTextColor={placeHolderTextColor}
           onChangeText={handleAreaFeild}
-        />
+        /> */}
 
         <View
           style={[
@@ -263,10 +355,14 @@ const PowerUserRegister = () => {
         <DropdownExample
           titleInput={'-- Select Your Proffession --'}
           data={ProfessionData}
+          selectedValue={profession}
+          setDropdownValue={setProfession}
         />
         <DropdownExample
           titleInput={'-- Monthly Household Income --'}
           data={IncomeData}
+          selectedValue={income}
+          setDropdownValue={setIncome}
         />
 
         <TextInput
@@ -295,8 +391,11 @@ const PowerUserRegister = () => {
                 maxWidth: 200,
               },
               response => {
+                console.log(response)
+                if(response.didCancel != true){
                 SetResourcePath(response.assets[0].uri);
                 setIdProof(true);
+                }
               },
             )
           }>
@@ -305,15 +404,104 @@ const PowerUserRegister = () => {
           </Text>
         </Pressable>
 
-        <Pressable
+       
+        <Text style={{fontSize:20}}>Add Followers :</Text>
+        <View style={{ padding: 20 }}>
+      <FlatList
+        data={followers}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+         
+        <View  style={{}}>
+        
+          <TextInput
+           style={styles.feildStles}
+            value={item.name}
+            placeholder={'Name'}
+            placeholderTextColor={placeHolderTextColor}
+            onChangeText={(text) => updateFollower(index, 'name', text)}
+          />
+
+          <TextInput
+            style={styles.feildStles}
+            placeholder={'Email'}
+            value={item.email}
+            placeholderTextColor={placeHolderTextColor}
+            onChangeText={(text) => {
+                updateFollower(index, 'email', text)
+            }}
+          />
+          <TextInput
+            style={styles.feildStles}
+            placeholder={'Mobile'}
+             keyboardType="number-pad"
+            value={item.mobile}
+            placeholderTextColor={placeHolderTextColor}
+            onChangeText={(text) => updateFollower(index, 'mobile', text)}
+          />
+          <TextInput
+            style={styles.feildStles}
+            placeholder={'City'}
+            value={item.city}
+            placeholderTextColor={placeHolderTextColor}
+            onChangeText={(text) => updateFollower(index, 'city', text)}
+          />
+           {followers.length == 1 ? (
+             <TouchableOpacity onPress={() => {addFollower()}} style={{ backgroundColor: 'green', padding: 10,borderRadius:5,width:200,alignSelf:'center',marginTop:20}}>
+                <View style={{flexDirection:'row',justifyContent:'space-around',}}>
+              <Text style={{ color: 'white', textAlign: 'center' }}>Add Follower</Text>
+              <Ionicons
+                name='add'
+                size={20}
+                color={'white'}
+              />
+              </View>
+            </TouchableOpacity>
+            ):(
+              <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:20}}>
+              <TouchableOpacity onPress={() => {addFollower()}} style={{ backgroundColor: 'green', padding: 10,borderRadius:5,width:200, }}>
+              <View style={{flexDirection:'row',justifyContent:'space-around',}}>
+              <Text style={{ color: 'white', textAlign: 'center' }}>Add Follower</Text>
+              <Ionicons
+                name='add'
+                size={20}
+                color={'white'}
+              />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ backgroundColor: 'red', padding: 10,borderRadius:5,width:200, }}
+            onPress={() => {
+              if(followers.length > 1){
+                removeFollower(index)
+              }
+              }} >
+            <View style={{flexDirection:'row',justifyContent:'space-around',}}>
+            <Text style={{ color: 'white', textAlign: 'center' }}>Remove Follower</Text>
+            <Entypo
+                name='cross'
+                size={20}
+                color={'white'}
+              />
+              </View>
+            </TouchableOpacity>
+            </View>
+            )}
+        </View>
+           
+        )}
+      />
+
+    </View>
+    <Pressable
           style={styles.AddButton}
           onPress={() => {
             // navigation.navigate('AddFollowers');
             PowerUserRegisterValidation();
           }}>
-          <Text style={styles.AddButtonText}>ADD</Text>
+          <Text style={styles.AddButtonText}>SIGN UP</Text>
         </Pressable>
       </ScrollView>
+      
       {snackBar()}
     </View>
   );

@@ -55,6 +55,44 @@ const SearchFollowers = () => {
       });
   };
 
+  const FollowUser = async (item)=>{
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    var raw = JSON.stringify({
+       "id":parseInt(item.id),
+       "email":`${item.email}`
+    });
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+     console.log(raw)
+    await fetch(`${baseURL}/followUser`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        console.log('followe user res.', res);
+        if (res.message == 'success') {
+          alert(res.description)
+          setLoading(false);
+        }else{
+          setSearchRes([])
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  }
+
   const Item = ({item}) => {
     return (
       <View
@@ -81,6 +119,9 @@ const SearchFollowers = () => {
         </View>
         <View style={{alignSelf: 'center',}}>
         <TouchableOpacity
+        onPress={()=>{
+          FollowUser(item)
+        }}
           style={{padding: 10, backgroundColor: 'blue', borderRadius: 5,}}>
           <Text style={{alignSelf: 'center', color: 'white'}}>Follow</Text>
         </TouchableOpacity>
