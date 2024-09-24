@@ -405,8 +405,8 @@ const PowerUserRegister = () => {
         </Pressable>
 
        
-        <Text style={{fontSize:20}}>Add Followers :</Text>
-        <View style={{ padding: 20 }}>
+        <Text style={{fontSize:20,marginTop:10}}>Add Followers :</Text>
+        <View style={{ marginTop:10 }}>
       <FlatList
         data={followers}
         keyExtractor={(item, index) => index.toString()}
@@ -447,7 +447,7 @@ const PowerUserRegister = () => {
             onChangeText={(text) => updateFollower(index, 'city', text)}
           />
            {followers.length == 1 ? (
-             <TouchableOpacity onPress={() => {addFollower()}} style={{ backgroundColor: 'green', padding: 10,borderRadius:5,width:200,alignSelf:'center',marginTop:20}}>
+             <TouchableOpacity onPress={() => {addFollower()}} style={{ backgroundColor: 'green', padding: 10,borderRadius:5,width:150,alignSelf:'center',marginTop:20}}>
                 <View style={{flexDirection:'row',justifyContent:'space-around',}}>
               <Text style={{ color: 'white', textAlign: 'center' }}>Add Follower</Text>
               <Ionicons
@@ -459,7 +459,7 @@ const PowerUserRegister = () => {
             </TouchableOpacity>
             ):(
               <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:20}}>
-              <TouchableOpacity onPress={() => {addFollower()}} style={{ backgroundColor: 'green', padding: 10,borderRadius:5,width:200, }}>
+              <TouchableOpacity onPress={() => {addFollower()}} style={{ backgroundColor: 'green', padding: 10,borderRadius:5,width:150, }}>
               <View style={{flexDirection:'row',justifyContent:'space-around',}}>
               <Text style={{ color: 'white', textAlign: 'center' }}>Add Follower</Text>
               <Ionicons
@@ -469,7 +469,7 @@ const PowerUserRegister = () => {
               />
               </View>
             </TouchableOpacity>
-            <TouchableOpacity style={{ backgroundColor: 'red', padding: 10,borderRadius:5,width:200, }}
+            <TouchableOpacity style={{ backgroundColor: 'red', padding: 10,borderRadius:5,width:150, }}
             onPress={() => {
               if(followers.length > 1){
                 removeFollower(index)
@@ -490,9 +490,7 @@ const PowerUserRegister = () => {
            
         )}
       />
-
-    </View>
-    <Pressable
+       <Pressable
           style={styles.AddButton}
           onPress={() => {
             // navigation.navigate('AddFollowers');
@@ -500,6 +498,8 @@ const PowerUserRegister = () => {
           }}>
           <Text style={styles.AddButtonText}>SIGN UP</Text>
         </Pressable>
+    </View>
+   
       </ScrollView>
       
       {snackBar()}
@@ -530,7 +530,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: '90%',
     alignSelf: 'center',
-    marginBottom: 50,
+    // marginBottom: 50,
   },
   feildStles: {
     backgroundColor: '#ffffff',

@@ -124,6 +124,9 @@ console.log(income,profession)
         if (result.message == 'success') {
           navigation.navigate('Login');
           setLoading(false);
+        }else{
+          alert(result.description)
+          setLoading(false);
         }
         setLoading(false);
       })

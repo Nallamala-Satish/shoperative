@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TextInput, Pressable} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Pressable,Alert} from 'react-native';
 import {HeaderComponent} from '../CustomComponents/HeaderComponent';
 import {Snackbar} from 'react-native-paper';
 import { baseURL } from '../../utils/Constants';
 import { placeHolderTextColor } from '../../theme/colors';
 import { getUserProfileInfo } from '../../utils/AsyncStorageHelper';
+import ActivityStatus from '../shared/ActivityStatus';
+import { useNavigation } from '@react-navigation/native';
 
 const Help = () => {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [err, setErr] = useState('');
   const [visible, setVisible] = useState(false);
+  const[loading,setLoading]= useState(false)
+  const navigation = useNavigation()
 
   const onDismiss = () => {
     setVisible(false);
@@ -72,6 +76,13 @@ const Help = () => {
         const res = JSON.parse(result)
         console.log('help res.', res);
         if (res.message == 'success') {
+          Alert.alert(res.message, res.description,
+            [
+              { text: "Cancel", onPress: () => { } },
+              { text: "Ok", onPress: () =>  navigation.goBack() }
+            ])
+          setLoading(false);
+        }else{
           alert(res.description)
           setLoading(false);
         }
@@ -86,6 +97,7 @@ const Help = () => {
   return (
     <>
       <HeaderComponent title={'Help'} />
+      <ActivityStatus message={''} loading={loading} />
       <View style={styles.container}>
         <View style={styles.contentContainerStyles}>
           <Text style={styles.textFeildStyles}>Subject</Text>

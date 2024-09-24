@@ -5,7 +5,7 @@ import f2image from '../images/DashBoardImages/f2.png';
 import f3image from '../images/DashBoardImages/f3.png';
 import f4image from '../images/DashBoardImages/f4.png';
 
-export const baseURL = 'http://shoperative.in/api';
+export const baseURL = 'https://shoperative.in/api';
 
 export const OrderData = [
   {

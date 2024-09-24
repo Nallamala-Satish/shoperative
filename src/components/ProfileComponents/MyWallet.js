@@ -6,54 +6,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { baseURL } from '../../utils/Constants';
 import { AppTable } from '../CustomComponents/AppTable';
+import ActivityStatus from '../shared/ActivityStatus';
+import { getUserProfileInfo } from '../../utils/AsyncStorageHelper';
 
 const MyWallet = () => {
-  const data =[
-    {
-      "cart_id": "9",
-      "orderid": "1",
-      "ordernumber": "SHPRTV16132002546",
-      "orderdate": "2021-02-13 12:40:54",
-      "shippingCharges": "20",
-      "unitPrice": "20",
-      "totalAmount": "20",
-      "refundAmount": "40",
-      "productName": "ANTISEPTIC SOAP",
-      "cancelledOn": "2024-04-17 12:37:29",
-      "reason": "you cancelled order item."
-    },
-    {
-      "cart_id": "8",
-      "orderid": "1",
-      "ordernumber": "SHPRTV16132002546",
-      "orderdate": "2021-02-13 12:40:54",
-      "shippingCharges": "20",
-      "unitPrice": "210",
-      "totalAmount": "210",
-      "refundAmount": "230",
-      "productName": "ALMOND OIL VEG CAPSULE",
-      "cancelledOn": "2024-04-17 12:37:29",
-      "reason": "you cancelled order item."
-    },
-    {
-      "cart_id": "7",
-      "orderid": "1",
-      "ordernumber": "SHPRTV16132002546",
-      "orderdate": "2021-02-13 12:40:54",
-      "shippingCharges": "20",
-      "unitPrice": "42",
-      "totalAmount": "42",
-      "refundAmount": "62",
-      "productName": "ALMOND & HONEY SOAP",
-      "cancelledOn": "2024-04-17 12:37:29",
-      "reason": "you cancelled order item."
-    }
-  ]
-
-  const data1 =332
 
   const [walletRes,setWalletRes] = useState([])
   const[walletAmount,setWalletAmount] = useState('')
+  const[loading,setLoading]= useState(false)
 
   const getMyWallet = async ()=>{
     setLoading(true);
@@ -67,15 +27,16 @@ const MyWallet = () => {
       headers: myHeaders,
       redirect: 'follow',
     };
-     console.log(raw)
     await fetch(`${baseURL}/myWallet`, requestOptions)
       .then(response => response.text())
       .then(result => {
-        const res = JSON.parse(result)
-        console.log('wallet res.', res);
-        if (res.message == 'success') {
+        const res = JSON.parse(result);
+        console.log('wallet res1.', res,res.message);
+        if (res.message.trim() == 'success') {
           setWalletRes(res.data)
           setWalletAmount(res.total_wallet_amt)
+          setLoading(false);
+        }else{
           setLoading(false);
         }
         setLoading(false);
@@ -107,8 +68,8 @@ const MyWallet = () => {
   ];
 
   let tableData = [];
-  for (let index = 0; index < data.length; index++) {
-    const wallet = data[index];
+  for (let index = 0; index < walletRes.length; index++) {
+    const wallet = walletRes[index];
     const rowData = [];
     for (let j = 0; j <= 11; j += 1) {
       if (j == 0) {
@@ -155,7 +116,7 @@ const MyWallet = () => {
   return (
     <View style={styles.container}>
       <HeaderComponent title={'My Wallet'} />
-
+      <ActivityStatus message={''} loading={loading} />
       <View
         style={{
           width: '90%',
@@ -165,7 +126,7 @@ const MyWallet = () => {
           height: '80%',
         }}>
         <Text style={styles.headingTextStyles}>YOUR CASH BALANCE</Text>
-        <Text style={styles.balanceTextStyles}>₹ {data1}</Text>
+        <Text style={styles.balanceTextStyles}>₹ {walletAmount}</Text>
 
         {/* <View>
           <Text style={styles.referalStyles1}>Share Referral Code</Text>
