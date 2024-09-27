@@ -40,6 +40,7 @@ import AddAddress from '../components/ProfileComponents/AddAddress';
 import { MyFollowers } from '../components/ProfileComponents/MyFollowers';
 import { AddFollower } from '../components/ProfileComponents/AddFollower';
 import SearchPowerUsers from '../components/SearchPowerUsers';
+import { MyShareCartItem } from '../components/ProfileComponents/MyShareCartItem';
 
 const RootStack = createStackNavigator();
 const screens = [
@@ -225,6 +226,11 @@ const screens = [
     name: 'SearchPowerUsers',
     components: SearchPowerUsers,
     headerBackTitle: 'SearchPowerUsers',
+  },
+  {
+    name: 'MyShareCartItem',
+    components: MyShareCartItem,
+    headerBackTitle: 'MyShareCartItem',
   },
 ];
 const MainRoute = () => {
