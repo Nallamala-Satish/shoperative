@@ -14,6 +14,8 @@ const ShareCartItem = () => {
     const [cartItemWiseRes,setcartItemWiseRes] = useState([])
     const [selectedRowData, setSelectedRowData] = useState(null);
     const [selectedRowUserList,setSelectedRowUserList] = useState([])
+    const [showTable,setShowTable] = useState(false)
+    const[cartId,setCartId]= useState('')
   
     const CartItemWise = async ()=>{
       setLoading(true);
@@ -112,6 +114,8 @@ const CustomCards = item => {
       <TouchableOpacity onPress={()=>{
         setSelectedRowData(item);
         setSelectedRowUserList(item.user_result)
+        setCartId(item.cartId)
+        setShowTable(!showTable)
       }}
       style={{flexDirection:'row',}}>
          <View>
@@ -127,18 +131,7 @@ const CustomCards = item => {
           <Text style={{fontSize:17,color:'black'}}>₹{itemAmount}</Text>
           </View>
        </TouchableOpacity>
-    </View>
-  );
-};
-
-  return (
-    <View style={styles.container}>
-        <ActivityStatus message='' loading={loading}/>
-
-        <ScrollView style={styles.container}>
-        {cartItemWiseRes.map(item => CustomCards(item))}
-              
-                  {selectedRowData && (
+       {selectedRowData && showTable && (cartId == item.cartId) && (
                     <View
                     style={{
                       flexDirection: 'row',
@@ -157,6 +150,21 @@ const CustomCards = item => {
                     />
                   </View>
                   )}
+    </View>
+  );
+};
+
+  return (
+    <View style={styles.container}>
+        <ActivityStatus message='' loading={loading}/>
+
+        <ScrollView style={styles.container}>
+        {cartItemWiseRes.length > 0 ?(
+           <>
+        {cartItemWiseRes.map(item => CustomCards(item))}
+        </>
+      ):(<Text style={{alignSelf:'center',fontSize:20}}>No Share cart items.. Please share the cart to continue.</Text>)} 
+                 
       </ScrollView>
     </View>
   );
@@ -166,7 +174,7 @@ const styles = StyleSheet.create({
   headerStyles: {
     width: '100%',
     backgroundColor: '#ED7421',
-    height: 50,
+    // height: 50,
     alignItems: 'center',
     flexDirection: 'row',
   },

@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React,{ useState,useEffect } from 'react'
-import {View, Text, StyleSheet, ScrollView,TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, ScrollView,TouchableOpacity,Alert} from 'react-native';
 import {OrderData} from '../../utils/Constants';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getUserProfileInfo } from '../../utils/AsyncStorageHelper'
@@ -103,6 +103,77 @@ const MyOrders = () => {
       });
   }
 
+  const getOrderDetails = async (orderId)=>{
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    var raw = JSON.stringify({
+      "orderId":(orderId),
+   });
+
+   var requestOptions = {
+     method: 'POST',
+     headers: myHeaders,
+     body: raw,
+     redirect: 'follow',
+   };
+    await fetch(`${baseURL}/orderView`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result);
+        console.log('order details res1.', res,res.message);
+        if (res && res.data.length > 0) {
+          navigation.navigate('MyOrderDetails',{order:res.data[0]})
+          // setOrderDetails(res.data)
+          setLoading(false);
+        }else{
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  }
+
+  const CancelOrder = async (orderId)=>{
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    var raw = JSON.stringify({
+      "orderId":(orderId),
+   });
+
+   var requestOptions = {
+     method: 'POST',
+     headers: myHeaders,
+     body: raw,
+     redirect: 'follow',
+   };
+    await fetch(`${baseURL}/cancelOrder`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result);
+        console.log('cancel order details res1.', res,res.message);
+        if (res && res.message == 'success') {
+         alert(res.description)
+          setLoading(false);
+        }else{
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  }
+
   useEffect(()=>{
     getSharedCartList()
   },[])
@@ -132,7 +203,7 @@ const MyOrders = () => {
         rowData.push(`${index+1}`)
       }
       if (j == 1) {
-           rowData.push(`${cart.cartType == 1 ? 'Share Cart' :cart.cartType == 2 ? "Regular Basket": ''}`)
+           rowData.push(`${cart.cartType == 1 ? 'Regular Basket' :cart.cartType == 2 ? "Share Cart": ''}`)
       }
       if (j == 2) {
         rowData.push(`${cart.orderNumber ? cart.orderNumber :''}`)
@@ -146,14 +217,18 @@ const MyOrders = () => {
      if (j == 5) {
       rowData.push(`${cart.totalPrice ? cart.totalPrice :''}`)
      }
+     if (j == 6) {
+      rowData.push(`${cart.orderDate ? cart.orderDate :''}`)
+    }
      
-      if (j == 6) {
+      if (j == 7) {
         rowData.push(
           // (ViewButton(index, cart))
           <View style={{margin:10, alignSelf: 'center',}}>
           <TouchableOpacity style={{
-              backgroundColor:'royalblue',padding:5,width:60,borderRadius:5
+              backgroundColor:'#e4825f',padding:5,borderRadius:5
           }}
+          disabled
             onPress={() => {
                 //  navigation.navigate('MyShareCartItem',{cart:cart})
             }}>
@@ -161,14 +236,34 @@ const MyOrders = () => {
               alignSelf: 'center',
                color:'white',
               // fontWeight: 'bold'
-            }}>Order Placed</Text>
+            }}>{cart.orderStatus == 1 ? 'Order Placed':cart.orderStatus == 2 ? 'Order Approved':cart.orderStatus == 3 ? 'Dispatched':
+            cart.orderStatus == 4 ? 'Order Delivered':cart.orderStatus == 5 ? 'Order Canceled':''}</Text>
           </TouchableOpacity>
           
         </View>
         )
       }
-      if (j == 7) {
-        rowData.push(`${cart.orderDate ? cart.orderDate :''}`)
+      if (j == 8) {
+        rowData.push(
+          <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+            <TouchableOpacity style={{backgroundColor:'#15bbb6',padding:5,width:70,borderRadius:5}}
+            onPress={()=>{
+              getOrderDetails(cart.orderId)
+            }}>
+              <Text style={{ alignSelf: 'center',color:'white',}}>View</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{backgroundColor:'#e4825f',padding:5,width:70,borderRadius:5}}
+            onPress={()=>{
+              Alert.alert("Order", "Are you want cancel order ?",
+                [
+                  { text: "Cancel", onPress: () => { } },
+                  { text: "Ok", onPress: () => CancelOrder(cart.orderId) }
+                ])
+            }}>
+              <Text style={{alignSelf: 'center',color:'white',}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        )
       }
      
     }

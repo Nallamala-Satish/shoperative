@@ -13,6 +13,8 @@ const ShareCartUser = () => {
   const [cartUserWiseRes,setcartUserWiseRes] = useState([])
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowCartList,setSelectedRowCartList] = useState([])
+  const [showTable,setShowTable] = useState(false)
+  const[userId,setUserId]= useState('')
 
   const CartUserWise = async ()=>{
     setLoading(true);
@@ -35,7 +37,7 @@ const ShareCartUser = () => {
       .then(response => response.text())
       .then(result => {
         const res = JSON.parse(result)
-        console.log('cart user wise res...', res.data.shareItemDeatils);
+        console.log('cart user wise res...', res);
          if(res && res.message == 'success'){
           setcartUserWiseRes(res.data.userDetails)
           setLoading(false);
@@ -110,6 +112,8 @@ const CustomCards = item => {
       <TouchableOpacity onPress={()=>{
         setSelectedRowData(item);
         setSelectedRowCartList(item.cart_result)
+        setUserId(item.userid)
+        setShowTable(!showTable)
       }}
       style={{flexDirection:'row',}}>
          <View>
@@ -125,17 +129,7 @@ const CustomCards = item => {
           <Text style={{fontSize:17,color:'black'}}>₹{totalAmount}</Text>
           </View>
        </TouchableOpacity>
-    </View>
-  );
-};
-
-return (
-  <View style={styles.container}>
-      <ActivityStatus message='' loading={loading}/>
-      <ScrollView style={styles.container}>
-        {cartUserWiseRes.map(item => CustomCards(item))}
-              
-                  {selectedRowData && (
+       {selectedRowData && showTable && (userId == item.userid) && (
                     <View
                     style={{
                       flexDirection: 'row',
@@ -154,6 +148,20 @@ return (
                     />
                   </View>
                   )}
+    </View>
+  );
+};
+
+return (
+  <View style={styles.container}>
+      <ActivityStatus message='' loading={loading}/>
+      <ScrollView style={styles.container}>
+        {cartUserWiseRes.length > 0 ?(
+           <>
+           {cartUserWiseRes.map(item => CustomCards(item))}
+           </>
+      ):(<Text style={{alignSelf:'center',fontSize:20}}>No Share cart items.. Please share the cart to continue.</Text>)} 
+                 
       </ScrollView>
     </View>
   );
@@ -163,7 +171,7 @@ const styles = StyleSheet.create({
   headerStyles: {
     width: '100%',
     backgroundColor: '#ED7421',
-    height: 50,
+    // height: 50,
     alignItems: 'center',
     flexDirection: 'row',
   },
