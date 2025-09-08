@@ -27,10 +27,9 @@ const Cosmetics = () => {
   const {id, subId} = route.params;
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [like, setLike] = useState(false);
-  const [itemId, setItemId] = useState('');
+  const [wishlistItems, setWishlistItems] = useState([]);
 
-  console.log('item id', itemId);
+  console.log('wishlist items', wishlistItems);
 
   const getProducts = async () => {
     setLoading(true);
@@ -38,7 +37,6 @@ const Cosmetics = () => {
     var myHeaders = new Headers();
     myHeaders.append('Authorization', `${res.token}`);
     myHeaders.append('Content-Type', 'application/json');
-    // myHeaders.append("Cookie", "PHPSESSID=5b8d0a77d015b0da55ede1ea2031b5bd");
 
     let raw = JSON.stringify({
       menu_id: id,
@@ -55,7 +53,6 @@ const Cosmetics = () => {
     fetch(`${baseURL}/getProducts`, requestOptions)
       .then(response => response.json())
       .then(result => {
-        // console.log('products res', result);
         if (result.message == 'Products list') {
           setProducts(result.products);
           setLoading(false);
@@ -68,7 +65,35 @@ const Cosmetics = () => {
       });
   };
 
-  const addWishlist = async id => {
+  const getWishList = async () => {
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+
+    fetch(`${baseURL}/getWishlist`, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        console.log('wishlist list', result);
+        console.log('wishlist data', result.data);
+        if (result.message == 'success') {
+          setWishlistItems(result.data || []);
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  };
+
+  const addWishlist = async (productId) => {
     setLoading(true);
     const userInfo = await getUserProfileInfo();
     const myHeaders = new Headers();
@@ -76,7 +101,7 @@ const Cosmetics = () => {
     myHeaders.append('Authorization', `${userInfo.token}`);
 
     const raw = JSON.stringify({
-      productId: id,
+      productId: productId,
     });
 
     const requestOptions = {
@@ -85,16 +110,57 @@ const Cosmetics = () => {
       body: raw,
       redirect: 'follow',
     };
-    console.log(raw);
+    console.log('Adding to wishlist:', raw);
     fetch(`${baseURL}/addToWishlist`, requestOptions)
       .then(response => response.text())
       .then(result => {
-        console.log('addWhistlist res', result);
-        const res= JSON.parse(result)
-        const des = res.description 
+        console.log('addWishlist res', result);
+        const res = JSON.parse(result);
+        const des = res.description;
         if (res.message == 'success') {
-          setItemId(id);
-          setLike(!like);
+          // Refresh wishlist after adding
+          getWishList();
+          alert(des);
+          setLoading(false);
+        } else {
+          alert(des);
+          setLoading(false);
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.log('error', error);
+        setLoading(false);
+      });
+  };
+
+  const removeFromWishlist = async (productId) => {
+    setLoading(true);
+    const userInfo = await getUserProfileInfo();
+    const myHeaders = new Headers();
+    myHeaders.append('Content-Type', 'application/json');
+    myHeaders.append('Authorization', `${userInfo.token}`);
+
+    const raw = JSON.stringify({
+      productId: productId,
+    });
+
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow',
+    };
+    console.log('Removing from wishlist:', raw);
+    fetch(`${baseURL}/removeFromWishlist`, requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        console.log('removeWishlist res', result);
+        const res = JSON.parse(result);
+        const des = res.description;
+        if (res.message == 'success') {
+          // Refresh wishlist after removing
+          getWishList();
           alert(des);
           setLoading(false);
         } else {
@@ -133,10 +199,8 @@ const Cosmetics = () => {
       .then(response => response.text())
       .then(result => {
         console.log('addBasket res', result);
-        const res= JSON.parse(result)
+        const res = JSON.parse(result);
         if (res.message == 'success') {
-          setItemId(id);
-          setLike(!like);
           setLoading(false);
           alert('product added in Basket');
         } else {
@@ -151,120 +215,99 @@ const Cosmetics = () => {
       });
   };
 
+  // Check if product is in wishlist - improved logic
+  const isInWishlist = (productId) => {
+    console.log('Checking if product', productId, 'is in wishlist');
+    console.log('Wishlist items:', wishlistItems);
+    
+    if (!wishlistItems || wishlistItems.length === 0) {
+      console.log('No wishlist items');
+      return false;
+    }
+
+    // Check multiple possible field names for product ID
+    const found = wishlistItems.some(item => {
+      const itemProductId = item.product_id || item.productId || item.id;
+      console.log('Comparing:', itemProductId, 'with', productId);
+      return itemProductId == productId;
+    });
+    
+    console.log('Product found in wishlist:', found);
+    return found;
+  };
+
   const Item = ({item}) => {
-    console.log(item);
+    console.log('Rendering item:', item.id, item.prod_name);
+    const isWishlisted = isInWishlist(item.id);
+    console.log('Is wishlisted:', isWishlisted);
+    
     return (
-      <View style={{margin: 5}}>
-        <Card style={{padding: 5, backgroundColor: 'white', elevation: 10}}>
-          {item.id == itemId && like == true ? (
-            <TouchableOpacity
-              onPress={() => {
-                setItemId(item.id), setLike(!like);
-                // addWishlist(item.id )
-              }}>
-              <Ionicons
-                name="heart-circle-outline"
-                size={15}
-                style={{alignSelf: 'flex-end', padding: 5, color: 'red'}}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => {
+      <View style={styles.itemContainer}>
+        <Card style={styles.cardContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Heart clicked for product:', item.id, 'Current wishlist status:', isWishlisted);
+              if (isWishlisted) {
+                removeFromWishlist(item.id);
+              } else {
                 addWishlist(item.id);
-              }}>
-              <Ionicons
-                name="heart-outline"
-                size={15}
-                style={{alignSelf: 'flex-end', padding: 5, color: 'red'}}
-              />
-            </TouchableOpacity>
-          )}
+              }
+            }}>
+            <Ionicons
+              name={isWishlisted ? "heart" : "heart-outline"}
+              size={20}
+              style={{
+                alignSelf: 'flex-end',
+                padding: 5,
+                color: isWishlisted ? '#FF6B6B' : '#FF8C00'
+              }}
+            />
+          </TouchableOpacity>
+          
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('ProductDetails', {productId: item.id});
             }}>
-            <Image source={{uri: item.prod_image}} style={styles.imageStyles} />
-            <Text
-              style={{
-                color: 'black',
-                fontWeight: 'bold',
-                fontSize: 15,
-                padding: 5,
-                width: 150,
-              }}>
+            <Image source={{uri: item.prod_image}} style={styles.productImage} />
+            <Text style={styles.productName}>
               {item.prod_name}
             </Text>
-            <Text
-              style={{
-                padding: 5,
-                fontSize: 10,
-                width: 150,
-                alignSelf: 'center',
-              }}>
-              <Text style={{alignSelf: 'center'}}>
-                {item.prod_desc.length < 50
-                  ? `${item.prod_desc}`
-                  : `${item.prod_desc.substring(0, 60)}  ...`}
-              </Text>
-              {/* {item.prod_desc} */}
+            <Text style={styles.productDescription}>
+              {item.prod_desc.length < 50
+                ? `${item.prod_desc}`
+                : `${item.prod_desc.substring(0, 60)}  ...`}
             </Text>
-            <Text
-              style={{
-                color: 'black',
-                fontWeight: 'bold',
-                color: 'red',
-                fontSize: 15,
-              }}>
-              {' '}
+            <Text style={styles.productPrice}>
               Rs.{item.selling_price}{' '}
-              <Text style={{fontSize: 10}}>({item.unit_of_measure})</Text>
+              <Text style={styles.unitText}>({item.unit_of_measure})</Text>
             </Text>
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: 5,
-            }}>
-            <TouchableOpacity
-              style={{
-                backgroundColor: 'darkorange',
-                borderRadius: 5,
-                padding: 5,
-              }}>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text
-                  style={{color: 'white', alignSelf: 'center', fontSize: 10}}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.shareCartButton}>
+              <View style={styles.buttonContent}>
+                <Text style={styles.buttonText}>
                   Share Cart{' '}
                 </Text>
                 <MaterialIcons
                   name="add-shopping-cart"
-                  size={15}
-                  style={{color: 'white'}}
+                  size={14}
+                  style={styles.buttonIcon}
                 />
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{
-                backgroundColor: 'lightgreen',
-                padding: 5,
-                borderRadius: 5,
-              }}
+              style={styles.basketButton}
               onPress={() => {
                 addBasket(item);
               }}>
-              <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Text
-                  style={{color: 'white', alignSelf: 'center', fontSize: 10}}>
-                  basket{' '}
+              <View style={styles.buttonContent}>
+                <Text style={styles.buttonText}>
+                  Basket{' '}
                 </Text>
                 <FontAwesome
                   name="shopping-basket"
-                  size={15}
-                  style={{color: 'white'}}
+                  size={14}
+                  style={styles.buttonIcon}
                 />
               </View>
             </TouchableOpacity>
@@ -276,66 +319,31 @@ const Cosmetics = () => {
 
   useEffect(() => {
     getProducts();
+    getWishList();
   }, [isFocused]);
 
   return (
     <>
-      <ActivityStatus message="" loading={loading} />
+      <ActivityStatus message="Products loading" loading={loading} />
       <HeaderComponent title="Products" />
 
       <View style={styles.container}>
-        {/* <ScrollView  showsVerticalScrollIndicator={false}> */}
-        <View style={{flex: 1, marginBottom: 50}}>
-          {/* <Pressable
-            style={styles.productContainerStyles}
-            onPress={() => navigation.navigate('ProductDetails')}>
-            <Image source={cosmeticsImage} style={styles.imageStyles} />
-            <Text style={styles.productNameStyles}>Beauty Product 1</Text>
-            <Text style={styles.productPriceStyles}>₹ 399</Text>
-          </Pressable>
-          <Pressable
-            style={styles.productContainerStyles}
-            onPress={() => navigation.navigate('ProductDetails')}>
-            <Image source={cosmeticsImage} style={styles.imageStyles} />
-            <Text style={styles.productNameStyles}>Beauty Product 2</Text>
-            <Text style={styles.productPriceStyles}>₹ 289</Text>
-          </Pressable>
-          <Pressable
-            style={styles.productContainerStyles}
-            onPress={() => navigation.navigate('ProductDetails')}>
-            <Image source={cosmeticsImage} style={styles.imageStyles} />
-            <Text style={styles.productNameStyles}>Beauty Product 3</Text>
-            <Text style={styles.productPriceStyles}>₹ 149</Text>
-          </Pressable>
-          <Pressable
-            style={styles.productContainerStyles}
-            onPress={() => navigation.navigate('ProductDetails')}>
-            <Image source={cosmeticsImage} style={styles.imageStyles} />
-            <Text style={styles.productNameStyles}>Beauty Product 4</Text>
-            <Text style={styles.productPriceStyles}>₹ 899</Text>
-          </Pressable>
-          <Pressable
-            style={styles.productContainerStyles}
-            onPress={() => navigation.navigate('ProductDetails')}>
-            <Image source={cosmeticsImage} style={styles.imageStyles} />
-            <Text style={styles.productNameStyles}>Beauty Product 5</Text>
-            <Text style={styles.productPriceStyles}>₹ 419</Text>
-          </Pressable>
-          <Pressable
-            style={styles.productContainerStyles}
-            onPress={() => navigation.navigate('ProductDetails')}>
-            <Image source={cosmeticsImage} style={styles.imageStyles} />
-            <Text style={styles.productNameStyles}>Beauty Product 6</Text>
-            <Text style={styles.productPriceStyles}>₹ 539</Text>
-          </Pressable> */}
-          <FlatList
-            numColumns={2}
-            data={products || []}
-            renderItem={Item}
-            keyExtractor={item => item.id}
-          />
+        <View style={styles.contentContainer}>
+          {products?.length > 0 ? (
+            <FlatList
+              numColumns={2}
+              data={products || []}
+              renderItem={Item}
+              keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.flatListContainer}
+            />
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No Products Available</Text>
+            </View>
+          )}
         </View>
-        {/* </ScrollView> */}
       </View>
     </>
   );
@@ -343,40 +351,110 @@ const Cosmetics = () => {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     backgroundColor: '#FFF',
     padding: 10,
-    height: '100%',
   },
-  categoriesProducts: {
-    // flexDirection: 'row',
-    // flexWrap: 'wrap',
-    // justifyContent: 'space-between',
-    // width:200
+  contentContainer: {
+    flex: 1,
   },
-  imageStyles: {
-    width: 150,
-    height: 100,
-    borderRadius: 5,
+  flatListContainer: {
+    paddingBottom: 50,
   },
-  productContainerStyles: {
-    width: '48%',
-    height: 200,
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#999',
+    padding: 20,
   },
-  productNameStyles: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#ED7421',
-  },
-  productPriceStyles: {
+  emptyText: {
     fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
     fontWeight: '500',
+  },
+  itemContainer: {
+    flex: 1,
+    margin: 8,
+    maxWidth: '48%',
+  },
+  cardContainer: {
+    padding: 8,
+    backgroundColor: 'white',
+    elevation: 8,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  productImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 6,
+    marginBottom: 8,
+  },
+  productName: {
     color: '#333',
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 4,
+    textAlign: 'center',
+  },
+  productDescription: {
+    fontSize: 11,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 6,
+    lineHeight: 14,
+  },
+  productPrice: {
+    color: '#E74C3C',
+    fontWeight: 'bold',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  unitText: {
+    fontSize: 10,
+    color: '#888',
+    fontWeight: 'normal',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 5,
+  },
+  shareCartButton: {
+    backgroundColor: '#FF8C00',
+    borderRadius: 6,
+    padding: 6,
+    flex: 1,
+    marginRight: 4,
+  },
+  basketButton: {
+    backgroundColor: '#32CD32',
+    padding: 6,
+    borderRadius: 6,
+    flex: 1,
+    marginLeft: 4,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: '500',
+  },
+  buttonIcon: {
+    color: 'white',
+    marginLeft: 4,
   },
 });
 

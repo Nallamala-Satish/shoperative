@@ -56,6 +56,7 @@ fetch(`${baseURL}/forgot-password`, requestOptions)
   .then(result =>{ 
     // console.log('forget res',result)
     if(result.message == 'Success'){
+      navigation.navigate('OtpVerification')
       console.log('forget re',result.description)
       setErr(result.description);
     }

@@ -195,7 +195,7 @@ const AddAddress = props => {
     <SafeAreaView>
       <HeaderComponent title={' Add Address'} />
       <ScrollView>
-        <View style={{margin: 5, marginBottom: 100}}>
+        <View style={{margin: 10, marginBottom: 100}}>
           <View>
             <Text style={styles.textStyles}>
               Title <Text style={{color: 'red'}}>*</Text>
@@ -286,7 +286,7 @@ const AddAddress = props => {
                     alignSelf: 'center',
                     color: 'white',
                   }}>
-                  {status == 0 ? 'Add Aress' : 'Update Address'}
+                  {status == 0 ? 'Add Address' : 'Update Address'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -307,6 +307,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     color: '#000',
     fontWeight: '500',
+   
   },
   feildStles1: {
     backgroundColor: '#ffffff',
@@ -315,6 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     color: '#000',
     fontWeight: '500',
+   
   },
   textStyles: {
     paddingHorizontal: 10,

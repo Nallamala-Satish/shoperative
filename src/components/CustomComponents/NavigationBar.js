@@ -74,9 +74,9 @@ getProfile()
         {/* <Pressable style={ss.flexEnd} onPress={getProfile()}>
           <Image source={user} style={ss.userStyle} />
         </Pressable> */}
-        <Pressable style={ss.flexEnd} onPress={cartPress}>
+        <TouchableOpacity style={ss.flexEnd} onPress={()=>{navigation.navigate('Cart')}}>
           <Image source={cart} style={ss.cartStyle} />
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </View>
   );
